@@ -14,13 +14,13 @@ The Task Scheduler Widget is a Flutter component designed to display a schedule 
 
 ### Web
 <video width="560" height="315" controls>
-  <source src="demo/task_scheduler_web.mp4" type="video/mp4">
+  <source src="./demo/task_scheduler_web.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
 ### Mobile
 <video width="560" height="315" controls>
-  <source src="demo/task_scheduler_mobile.mp4" type="video/mp4">
+  <source src="./demo/task_scheduler_mobile.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
