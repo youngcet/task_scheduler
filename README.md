@@ -281,8 +281,8 @@ View demo in the example tab.
 
 ## Contributing
 
-If you have ideas or improvements for this package, we welcome contributions. Please open an issue or create a pull request on our [GitHub repository](https://github.com/youngcet/task_schedule).
+If you have ideas or improvements for this package, we welcome contributions. Please open an issue or create a pull request on our [GitHub repository](https://github.com/youngcet/task_scheduler).
 
 ## License
 
-This package is available under the [MIT License](https://github.com/youngcet/task_schedule/blob/main/LICENSE).
+This package is available under the [MIT License](https://github.com/youngcet/task_scheduler/blob/main/LICENSE).
