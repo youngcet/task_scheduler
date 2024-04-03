@@ -39,7 +39,7 @@ import 'package:task_scheduler/task_scheduler.dart';
 late TaskScheduler scheduleView;
 late TaskScheduleView taskScheduleView;
 ```
-2) Create an instance of the TaskScheduleView and pass the TaskScheduler.
+2) Create an instance of the **`TaskScheduleView`** and pass the **`TaskScheduler`**.
 ```dart
 // define the resource headers
 List<ScheduleResourceHeader> headers = [
@@ -129,11 +129,11 @@ taskScheduleView = TaskScheduleView(
         onEmptySlotPressed: (Map<String, dynamic> data) {},     // Callback function when an empty slot is pressed
         onDragAccept: (Map<String, dynamic> data) {},      // Callback function when an entry is dropped from dragging
         headers: headers,  // resource headers
-        entries: [],    // set entries to empty, do not set entries here
+        entries: [],    // set entries to empty, do not add entries here
         timeFormat: SchedulerTimeSettings(minuteInterval: 30) // minute intervals on the timeline, default 60
     ));
 ```
-3) Load the ScheduleView.
+3) Load the **`ScheduleView`**.
 ```dart
 // to load the schedule view, first add entries/tasks
 List<ScheduleEntry> entries = [
@@ -211,6 +211,8 @@ TaskScheduler(
       scheduleStartTime: ScheduleTimeline(hour: 8),...
       ....
       onDragAccept: handleDrop // I have passed the function handleDrop
+ ...
+));
 
 // declare the onDragAccept callback function that takes 1 argument 'data'
 // this function is called when an entry is dropped
@@ -235,7 +237,7 @@ If you don't want to manually process the data, TaskScheduleView provides a func
 ```dart
 void handleDrop(Map<String, dynamic> data) {
     // create an instance of TaskScheduleView
-    // pass the curent scheduleView
+    // create a new TaskScheduler and pass it to the view
     TaskScheduleView view = TaskScheduleView(
         taskScheduler: TaskScheduler(
         scheduleStartTime: scheduleView.scheduleStartTime,

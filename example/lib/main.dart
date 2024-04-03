@@ -134,18 +134,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    // instatiate the TaskScheduleView and pass TaskScheduler
-    taskScheduleView = TaskScheduleView(
-        taskScheduler: TaskScheduler(
-      scheduleStartTime: ScheduleTimeline(hour: 8),
-      scheduleEndTime: ScheduleTimeline(hour: 17),
-      onEmptySlotPressed: handleEmptySlotTap,
-      onDragAccept: handleDrop,
-      entries: [],
-      headers: headers,
-      timeFormat: SchedulerTimeSettings(minuteInterval: timeInterval),
-    ));
-
     // declare entries
     List<ScheduleEntry> entries = [
       ScheduleEntry(
@@ -236,6 +224,18 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Text('General', style: TextStyle(fontSize: 14)),
       )
     ];
+
+    // instatiate the TaskScheduleView and pass TaskScheduler
+    taskScheduleView = TaskScheduleView(
+        taskScheduler: TaskScheduler(
+      scheduleStartTime: ScheduleTimeline(hour: 8),
+      scheduleEndTime: ScheduleTimeline(hour: 17),
+      onEmptySlotPressed: handleEmptySlotTap,
+      onDragAccept: handleDrop,
+      entries: [],
+      headers: headers,
+      timeFormat: SchedulerTimeSettings(minuteInterval: timeInterval),
+    ));
 
     scheduleView = taskScheduleView.loadScheduleView(entries: entries);
   }
