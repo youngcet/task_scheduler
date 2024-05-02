@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:task_scheduler/task_scheduler.dart';
@@ -18,9 +18,52 @@ class TaskScheduleView {
 
     List<String> timeSlots = taskScheduler.getTimeline();
     _addEmptySlots(timeSlots);
+    _blockEntries();
+
     taskScheduler.entries?.addAll(entries);
 
     return taskScheduler;
+  }
+
+  void onResizeEntry(ScheduleEntry entry) {
+    int resourceId = entry.resource.index;
+    String id = entry.id;
+    int entryIndex =
+        taskScheduler.entries?.indexWhere((task) => task.id == id) ?? -1;
+
+    // hard coded year, month and day because the date doesn't matter, only time
+    DateTime entryStartTime =
+        DateTime(1991, 1, 1, entry.resource.hour, entry.resource.minutes);
+    DateTime entryEndTime =
+        entryStartTime.add(Duration(minutes: entry.duration));
+    DateTime closingHour =
+        DateTime(1999, 1, 1, taskScheduler.scheduleEndTime.hour, 0);
+
+    if (entryEndTime.isAfter(closingHour)) {
+      Duration difference = entryEndTime.difference(closingHour);
+      int differenceInMinutes = difference.inMinutes;
+      taskScheduler.entries?[entryIndex].duration -= differenceInMinutes;
+    } else {
+      List<ScheduleEntry> filteredEntries = taskScheduler.entries!
+          .where((entry) =>
+              entry.id != id &&
+              entry.resource.index == resourceId &&
+              entry.color != Colors.transparent)
+          .toList();
+
+      filteredEntries.forEach((element) {
+        DateTime startTime = DateTime(
+            1991, 1, 1, element.resource.hour, element.resource.minutes);
+        if (entryEndTime.isAfter(startTime)) {
+          // entry overlaps with another entry
+          // minus the difference in minutes
+          Duration difference = entryEndTime.difference(startTime);
+          int differenceInMinutes = difference.inMinutes;
+
+          taskScheduler.entries?[entryIndex].duration -= differenceInMinutes;
+        }
+      });
+    }
   }
 
   // Method to update the schedule view
@@ -52,20 +95,65 @@ class TaskScheduleView {
     if (indexToRemove != -1) {
       view.taskScheduler.entries?.removeAt(indexToRemove);
 
-      view.taskScheduler.entries?.add(ScheduleEntry(
-        color: data['bgColor'],
-        id: id,
-        resource: ResourceScheduleEntry(
-            index: data['resourceIndex'],
-            hour: bookedhour,
-            minutes: bookedminutes),
-        duration: data['duration'],
-        options: TaskSchedulerSettings(
-          isTaskDraggable: true, // false to disable drag
-        ),
-        onTap: data['onTap'],
-        child: data['child'],
-      ));
+      bool isSlotAvailable = true;
+
+      // check if entries are set to overlap or not
+      bool allowOverlapping = taskScheduler.allowEntryOverlap ?? false;
+      if (!allowOverlapping) {
+        DateTime newStartTime = DateTime(1999, 1, 1, bookedhour, bookedminutes);
+        DateTime newEndTime =
+            newStartTime.add(Duration(minutes: data['duration']));
+        DateTime closingHour =
+            DateTime(1999, 1, 1, taskScheduler.scheduleEndTime.hour, 0);
+
+        if (newEndTime.isAfter(closingHour) &&
+            !newEndTime.isAtSameMomentAs(closingHour)) {
+          isSlotAvailable = false;
+        }
+
+        if (isSlotAvailable) {
+          taskScheduler.entries?.forEach((entry) {
+            // String entryType = entry.data?['data'];
+            // Colors.transparent means an empty slot
+            if (entry.color != Colors.transparent &&
+                entry.resource.index == data['resourceIndex']) {
+              DateTime entryStartTime = DateTime(
+                  1999, 1, 1, entry.resource.hour, entry.resource.minutes);
+              DateTime entryEndTime =
+                  entryStartTime.add(Duration(minutes: entry.duration));
+
+              if (!(newStartTime.isAfter(entryEndTime) ||
+                      (newEndTime.isBefore(entryStartTime))) &&
+                  !newEndTime.isAtSameMomentAs(entryStartTime) &&
+                  !newStartTime.isAtSameMomentAs(entryEndTime)) {
+                isSlotAvailable = false;
+                return;
+              }
+            }
+          });
+        }
+      }
+
+      if (isSlotAvailable) {
+        view.taskScheduler.entries?.add(ScheduleEntry(
+          color: data['bgColor'],
+          id: id,
+          resource: ResourceScheduleEntry(
+              index: data['resourceIndex'],
+              hour: bookedhour,
+              minutes: bookedminutes),
+          duration: data['duration'],
+          options: TaskSchedulerSettings(
+              isTaskDraggable: true, taskResizeMode: data['taskResizeMode']),
+          onTap: data['onTap'],
+          child: data['child'],
+          data: data['data'],
+        ));
+      } else {
+        // throw an exception since overlap is the only reason a slot is not available
+        throw Exception(
+            'Overlapping Entry Periods Detected at $bookedhour:$bookedminutes');
+      }
     }
 
     return view.taskScheduler;
@@ -140,9 +228,11 @@ class TaskScheduleView {
                 taskScheduler.onDragAccept!(data);
               }
             },
+            data: const {'type': ScheduleEntry.empty},
             onTap: () {
               taskScheduler.onEmptySlotPressed({
                 'resource_id': res.id,
+                'resource_title': res.title,
                 'resource': {
                   'index': res.position,
                   'hour': int.parse(timeparts[0]),
@@ -155,5 +245,92 @@ class TaskScheduleView {
         }
       }
     }
+  }
+
+  /// Blocks entries based on the blocked entries list.
+  ///
+  /// If [taskScheduler.blockedEntries] is not null, this method iterates through each
+  /// entry and blocks the corresponding slots in the scheduler.
+  void _blockEntries() {
+    if (taskScheduler.blockedEntries != null) {
+      for (BlockedEntry entry in taskScheduler.blockedEntries!) {
+        int interval = taskScheduler.timeFormat!.minuteInterval ?? 60;
+        int numberOfSlots = entry.duration ~/ interval;
+
+        DateTime startTime =
+            DateTime(1991, 1, 1, entry.resource.hour, entry.resource.minutes);
+        DateTime endTime = startTime;
+
+        for (int i = 0; i < numberOfSlots; i++) {
+          _addNewEntry(ScheduleEntry(
+            color: Colors.grey.shade300,
+            id: generateId(5),
+            resource: ResourceScheduleEntry(
+                index: entry.resource.index,
+                hour: endTime.hour,
+                minutes: endTime.minute),
+            duration: interval,
+            options: TaskSchedulerSettings(isTaskDraggable: false),
+            data: const {'type': ScheduleEntry.blocked},
+          ));
+
+          endTime = endTime.add(Duration(minutes: interval));
+        }
+      }
+    }
+  }
+
+  /// Generates a random ID of the specified [length].
+  ///
+  /// Returns a randomly generated string ID consisting of alphanumeric characters.
+  String generateId(int length) {
+    const charset =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    Random random = Random();
+    return List.generate(
+        length, (index) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  /// Checks if a resource slot is available for the given [entryToAdd].
+  ///
+  /// Returns `true` if the slot is available, `false` otherwise.
+  bool isResourceSlotAvailable(ScheduleEntry entryToAdd) {
+    bool isSlotAvailable = true;
+
+    // check if entries are set to overlap or not
+    DateTime newStartTime = DateTime(
+        1999, 1, 1, entryToAdd.resource.hour, entryToAdd.resource.minutes);
+    DateTime newEndTime =
+        newStartTime.add(Duration(minutes: entryToAdd.duration));
+    DateTime closingHour =
+        DateTime(1999, 1, 1, taskScheduler.scheduleEndTime.hour, 0);
+
+    if (newEndTime.isAfter(closingHour) &&
+        !newEndTime.isAtSameMomentAs(closingHour)) {
+      isSlotAvailable = false;
+    }
+
+    if (isSlotAvailable) {
+      taskScheduler.entries?.forEach((entry) {
+        // Colors.transparent means an empty slot
+        if (entry.color != Colors.transparent &&
+            entry.resource.index == entryToAdd.resource.index) {
+          DateTime entryStartTime =
+              DateTime(1999, 1, 1, entry.resource.hour, entry.resource.minutes);
+          DateTime entryEndTime =
+              entryStartTime.add(Duration(minutes: entry.duration));
+
+          if (!(newStartTime.isAfter(entryEndTime) ||
+                  (newEndTime.isBefore(entryStartTime))) &&
+              !newEndTime.isAtSameMomentAs(entryStartTime) &&
+              !newStartTime.isAtSameMomentAs(entryEndTime)) {
+            isSlotAvailable = false;
+            return;
+          }
+        }
+      });
+    }
+
+    return isSlotAvailable;
   }
 }

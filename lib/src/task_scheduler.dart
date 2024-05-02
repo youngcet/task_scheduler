@@ -1,9 +1,12 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:task_scheduler/src/blocked_entry.dart';
+import 'package:task_scheduler/src/calendar_view.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'package:task_scheduler/src/task_scheduler_timeline.dart';
 import 'config.dart' as config;
@@ -36,8 +39,14 @@ class TaskScheduler extends StatefulWidget {
   // Callback function when an empty slot is pressed
   final Function(Map<String, dynamic>) onEmptySlotPressed;
 
-   // Callback function when a drag action is accepted
+  // Callback function when a drag action is accepted
   final Function(Map<String, dynamic>)? onDragAccept;
+
+  // Configure if entries can overlap
+  final bool? allowEntryOverlap;
+
+  // block off Resources
+  final List<BlockedEntry>? blockedEntries;
 
   // Constructor for TaskScheduler widget
   const TaskScheduler(
@@ -47,8 +56,10 @@ class TaskScheduler extends StatefulWidget {
       required this.headers,
       required this.entries,
       required this.onEmptySlotPressed,
+      this.allowEntryOverlap,
       this.options,
       this.timeFormat,
+      this.blockedEntries,
       this.onDragAccept})
       : super(key: key);
 
@@ -186,6 +197,11 @@ class _TaskSchedulerState extends State<TaskScheduler> {
           "TaskSchedulerError endTime hour should be lower or equal to 23 and greater than 12.");
     }
 
+    if (widget.scheduleEndTime.hour < widget.scheduleStartTime.hour) {
+      throw FlutterError(
+          "TaskSchedulerError start time should not be greater than end time hour.");
+    }
+
     if (widget.scheduleEndTime.hour >= 1 && widget.scheduleEndTime.hour < 10) {
       throw FlutterError(
           "TaskSchedulerError endTime hour should be in a 24-hour format.");
@@ -205,6 +221,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     config.verticalScrollController.addListener(() {
       timeVerticalController.jumpTo(config.verticalScrollController.offset);
     });
+
     return GestureDetector(
       child: Container(
         color: settings.backgroundColor,
@@ -748,6 +765,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
             onTap: () {
               widget.onEmptySlotPressed({
                 'resource_id': res.id,
+                'resource_title': res.title,
                 'resource': {
                   'index': res.position,
                   'hour': int.parse(timeparts[0]),
@@ -786,6 +804,46 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   // Widget timesline
   Widget addTimeSlot(String time) {
     double remainder = 60 / defaultInterval;
+
+    if (widget.timeFormat?.use24HourFormat != null) {
+      if (!widget.timeFormat!.use24HourFormat!) {
+        bool includePeriod = widget.timeFormat?.includePeriod ?? false;
+        bool includeMinutes = widget.timeFormat?.includeMinutes ?? true;
+
+        List<String> timeParts = time.split(':');
+
+        int hour = int.parse(timeParts[0]);
+        int minute = int.parse(timeParts[1]);
+
+        if (hour > 12) {
+          hour -= 12;
+          time = (hour < 10) ? '0$hour' : '$hour';
+          time = (minute < 10) ? '$time:0$minute' : '$time:$minute';
+
+          if (includePeriod) {
+            time = '${time}pm';
+            time = time.replaceAll(':00', '');
+          }
+        } else {
+          if (includePeriod) {
+            time = (hour == 12) ? '${time}pm' : '${time}am';
+            time = time.replaceAll(':00', '');
+          }
+        }
+
+        if (!includeMinutes && defaultInterval == 60) {
+          time = time.replaceAll(':00', '');
+        } else {
+          if (includePeriod) {
+            String min = (minute < 10) ? '0$minute' : '$minute';
+            time = time
+                .replaceAll('am', ':${min}am')
+                .replaceAll('pm', ':${min}pm');
+          }
+        }
+      }
+    }
+
     return SizedBox(
       height: ((config.cellHeight!.toDouble() / remainder)),
       width: 60,

@@ -13,19 +13,23 @@ class SchedulerTimeSettings {
   bool? includeMinutes;
 
   // Constructor for SchedulerTimeSettings
-  SchedulerTimeSettings({
-    this.minuteInterval,
-  });
+  SchedulerTimeSettings(
+      {this.minuteInterval,
+      this.use24HourFormat,
+      this.includePeriod,
+      this.includeMinutes});
 
   // Factory constructor for creating SchedulerTimeSettings with hour format
   factory SchedulerTimeSettings.hourFormat({
     bool format = false,
     bool period = false,
     int interval = 0,
-    bool includeMinutes = false,
+    bool includeMinutes = true,
   }) {
     return SchedulerTimeSettings(
-      minuteInterval: interval,
-    );
+        minuteInterval: interval,
+        use24HourFormat: format,
+        includePeriod: period,
+        includeMinutes: includeMinutes);
   }
 }

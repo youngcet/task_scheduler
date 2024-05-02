@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../task_scheduler.dart';
+
 class TaskSchedulerSettings {
   /// Slot height.
   int? cellHeight;
@@ -32,7 +34,17 @@ class TaskSchedulerSettings {
     '60': 195
   };
 
+  // Entry resizable options
+  Map<String, dynamic>? taskResizeMode = {
+    'allowResize': false,
+    'onResizeEnd': (Map<String, dynamic> resizeData) {},
+    'onResizeUpdate': (ScheduleEntry entries) {},
+  };
+
   // constructor
   TaskSchedulerSettings(
-      {this.dividerColor, this.backgroundColor, this.isTaskDraggable});
+      {this.dividerColor,
+      this.backgroundColor,
+      this.isTaskDraggable,
+      this.taskResizeMode});
 }

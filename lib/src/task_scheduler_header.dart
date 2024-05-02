@@ -3,6 +3,9 @@ import 'config.dart' as config;
 
 // ScheduleResourceHeader class for header widget in the schedule
 class ScheduleResourceHeader extends StatelessWidget {
+  // resource title
+  final String? title;
+
   // Child widget for the header
   final Widget child;
 
@@ -21,6 +24,7 @@ class ScheduleResourceHeader extends StatelessWidget {
       required this.child,
       required this.id,
       required this.position,
+      this.title,
       this.height})
       : super(key: key);
 
