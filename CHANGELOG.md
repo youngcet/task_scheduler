@@ -12,3 +12,4 @@
 * Added Calendar Views
     - **Calendar view** provides a week schedule view. There are two types to choose from, `CalendarView.weekView()` and `CalendarView.weekViewWithMonth()`.
 * Block off specific periods on a schedule for a resource.
+* Choose between 12-hour and 24-hour time formats.
