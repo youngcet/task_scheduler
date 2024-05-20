@@ -804,6 +804,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   // Widget timesline
   Widget addTimeSlot(String time) {
     double remainder = 60 / defaultInterval;
+    bool showHoursOnly = widget.timeFormat?.showHoursOnly ?? false;
 
     if (widget.timeFormat?.use24HourFormat != null) {
       if (!widget.timeFormat!.use24HourFormat!) {
@@ -842,6 +843,10 @@ class _TaskSchedulerState extends State<TaskScheduler> {
           }
         }
       }
+    }
+
+    if (showHoursOnly && !time.contains('00')){
+      time = '';
     }
 
     return SizedBox(

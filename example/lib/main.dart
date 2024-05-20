@@ -366,6 +366,7 @@ class _MyHomePageState extends State<MyHomePage> {
         use24HourFormat: true,
         includePeriod: true,
         includeMinutes: false,
+        showHoursOnly: true
       ),
     ));
 

@@ -82,6 +82,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   // A draggable widget
   Widget _draggableSlot() {
     bool isResizable = widget.options?.taskResizeMode?['allowResize'] ?? false;
+    bool _showTooltip = false;
 
     return (widget.color != Colors.transparent)
         ? Positioned(
@@ -162,6 +163,16 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                             ],
                             feedback: GestureDetector(
                               onTap: widget.onTap as void Function()? ?? () {},
+                              onTapDown: (_) {
+                                setState(() {
+                                  _showTooltip = true;
+                                });
+                              },
+                              onTapUp: (_) {
+                                setState(() {
+                                  _showTooltip = false;
+                                });
+                              },
                               child: Container(
                                 height: ((widget.duration.toDouble() *
                                         config.cellHeight!) /
@@ -178,7 +189,23 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               ),
                             ),
                             childWhenDragging: Container(
-                              child: const Center(),
+                              child: Material(
+                                //elevation: 3,
+                                borderRadius: config.borderRadius,
+                                child: Container(
+                                  height: ((widget.duration.toDouble() *
+                                          config.cellHeight!) /
+                                      60), //60 minutes
+                                  width: (config.cellWidth!.toDouble() *
+                                      entryDuration),
+                                  decoration: BoxDecoration(
+                                      borderRadius: config.borderRadius,
+                                      color: (widget.color ?? Theme.of(context).primaryColor).withOpacity(0.6)),
+                                  child: Center(
+                                    child: widget.child,
+                                  ),
+                                ),
+                              ),
                             ),
                             onDraggableCanceled: (velocity, offset) {
                               //_triggerRebuild();
@@ -291,9 +318,15 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                           final color = isDraggingOver
                               ? Colors.blue[100]
                               : Colors.transparent;
+                          
+                          String time = '';
+                          time = (widget.resource.hour < 10) ? '0${widget.resource.hour}' : '${widget.resource.hour}';
+                          time = (widget.resource.minutes < 10) ? '$time:0${widget.resource.minutes}' : '$time:${widget.resource.minutes}';
 
                           return InkWell(
                             onTap: widget.onTap as void Function()? ?? () {},
+                            child: Tooltip(
+                            message: isDraggingOver ? time : '',
                             child: Material(
                               color: color,
                               child: Container(
@@ -319,7 +352,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                 child: Center(
                                   child: widget.child,
                                 ),
-                              ),
+                              )),
                             ),
                           );
                         },
