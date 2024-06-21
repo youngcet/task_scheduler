@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -33,11 +34,11 @@ class TaskScheduleView {
 
     // hard coded year, month and day because the date doesn't matter, only time
     DateTime entryStartTime =
-        DateTime(1991, 1, 1, entry.resource.hour, entry.resource.minutes);
+        DateTime(ScheduleEntry.defaultYear, ScheduleEntry.defaultMonth, ScheduleEntry.defaultDay, entry.resource.hour, entry.resource.minutes);
     DateTime entryEndTime =
         entryStartTime.add(Duration(minutes: entry.duration));
     DateTime closingHour =
-        DateTime(1999, 1, 1, taskScheduler.scheduleEndTime.hour, 0);
+        DateTime(ScheduleEntry.defaultYear, ScheduleEntry.defaultMonth, ScheduleEntry.defaultDay, taskScheduler.scheduleEndTime.hour, 0);
 
     if (entryEndTime.isAfter(closingHour)) {
       Duration difference = entryEndTime.difference(closingHour);
@@ -50,19 +51,36 @@ class TaskScheduleView {
               entry.resource.index == resourceId &&
               entry.color != Colors.transparent)
           .toList();
-
-      filteredEntries.forEach((element) {
+      
+      filteredEntries.removeWhere((element) {
         DateTime startTime = DateTime(
-            1991, 1, 1, element.resource.hour, element.resource.minutes);
+          ScheduleEntry.defaultYear, ScheduleEntry.defaultMonth, ScheduleEntry.defaultDay, element.resource.hour, element.resource.minutes);
+        
+        return entryEndTime.isAfter(startTime);
+      });
+
+      inspect(filteredEntries);
+      for (var element in filteredEntries){
+        DateTime startTime = DateTime(
+            ScheduleEntry.defaultYear, ScheduleEntry.defaultMonth, ScheduleEntry.defaultDay, element.resource.hour, element.resource.minutes);
+
         if (entryEndTime.isAfter(startTime)) {
           // entry overlaps with another entry
           // minus the difference in minutes
+          //taskScheduler.entries![entryIndex].duration = 30;
           Duration difference = entryEndTime.difference(startTime);
           int differenceInMinutes = difference.inMinutes;
-
           taskScheduler.entries?[entryIndex].duration -= differenceInMinutes;
         }
-      });
+      }
+    }
+  }
+
+  void _updateDuration(int entryIndex, int differenceInMinutes) {
+    if (taskScheduler.entries != null && taskScheduler.entries!.length > entryIndex) {
+      int currentDuration = taskScheduler.entries![entryIndex].duration;
+      int newDuration = (currentDuration * 2) - differenceInMinutes;
+      taskScheduler.entries![entryIndex].duration = max(currentDuration, newDuration);
     }
   }
 
@@ -258,7 +276,7 @@ class TaskScheduleView {
         int numberOfSlots = entry.duration ~/ interval;
 
         DateTime startTime =
-            DateTime(1991, 1, 1, entry.resource.hour, entry.resource.minutes);
+            DateTime(ScheduleEntry.defaultYear, ScheduleEntry.defaultMonth, ScheduleEntry.defaultDay, entry.resource.hour, entry.resource.minutes);
         DateTime endTime = startTime;
 
         for (int i = 0; i < numberOfSlots; i++) {

@@ -360,6 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onEmptySlotPressed: handleEmptySlotTap,
       onDragAccept: handleDrop,
       entries: [],
+      //blockedEntries: blockedEntries,
       headers: CalendarView.weekView(),
       timeFormat: SchedulerTimeSettings(
         minuteInterval: timeInterval,
