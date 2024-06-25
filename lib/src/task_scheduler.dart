@@ -170,10 +170,10 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   void initState() {
     super.initState();
 
-    if (widget.showCurrentTimeLine != null){
+    if (widget.showCurrentTimeLine != null) {
       currentTimeLine = widget.showCurrentTimeLine!;
     }
-     
+
     if (widget.timeFormat?.minuteInterval != null) {
       defaultInterval = widget.timeFormat!.minuteInterval!;
     }
@@ -210,8 +210,8 @@ class _TaskSchedulerState extends State<TaskScheduler> {
       int hour = DateTime.now().hour;
       if (jumpToCurrentTime == true) {
         if (hour > widget.scheduleStartTime.hour) {
-          double scrollOffset =
-              (hour - widget.scheduleStartTime.hour) * config.cellHeight!.toDouble();
+          double scrollOffset = (hour - widget.scheduleStartTime.hour) *
+              config.cellHeight!.toDouble();
           config.verticalScrollController.animateTo(
             scrollOffset,
             duration: const Duration(milliseconds: 800),
@@ -226,7 +226,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
       }
     });
 
-    if (currentTimeLine){
+    if (currentTimeLine) {
       _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
         setState(() {});
       });
@@ -235,10 +235,10 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
   @override
   void dispose() {
-    if (currentTimeLine){
+    if (currentTimeLine) {
       _timer?.cancel();
     }
-    
+
     super.dispose();
   }
 
@@ -429,7 +429,8 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                             ],
                           ),
                           for (int i = 0; i < tasks.length; i++) tasks[i],
-                          if (currentTimeLine) _calculateHorizontalLinePosition()
+                          if (currentTimeLine)
+                            _calculateHorizontalLinePosition()
                         ],
                       ),
                     ),
@@ -443,12 +444,22 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     );
   }
 
+  /// Calculates the position of a horizontal line representing the current time.
+  ///
+  /// This widget positions a horizontal line based on the current time relative to the
+  /// start time of the schedule. The line's vertical position is calculated by converting
+  /// the current time into minutes and then mapping it to the height of the cells in the schedule.
+  ///
+  /// Returns:
+  /// - A [Positioned] widget containing a [Container] representing the horizontal line.
   Widget _calculateHorizontalLinePosition() {
     DateTime now = DateTime.now();
     int totalMinutesNow = now.hour * 60 + now.minute;
     num totalMinutesStart = widget.scheduleStartTime.hour * 60 + 0;
 
-    double totalOffset = (totalMinutesNow - totalMinutesStart) * config.cellHeight!.toDouble() / 60.0;
+    double totalOffset = (totalMinutesNow - totalMinutesStart) *
+        config.cellHeight!.toDouble() /
+        60.0;
 
     return Positioned(
       left: 0,
@@ -922,7 +933,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
       }
     }
 
-    if (showHoursOnly && !time.contains('00')){
+    if (showHoursOnly && !time.contains('00')) {
       time = '';
     }
 
