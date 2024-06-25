@@ -233,6 +233,17 @@ ScreenShots
 <img src="https://permanentlink.co.za/img/task_scheduler_3.png" alt="Screenshot 3" style="width: 60%;border: 1px solid black;">
 </div>
 
+## Hiding the line that shows the current time
+```dart
+TaskScheduleView view = TaskScheduleView(
+        taskScheduler: TaskScheduler(
+    scheduleStartTime: ...
+    ...
+    showCurrentTimeLine: false, // false to hide it, true to show it (default is true)
+    ...
+));
+```
+
 ## Empty Slot Click Event Handling
 To create new tasks when users click empty slots in the schedule, define a function that handles this action and assign it to the onEmptySlotPressed callback of the `TaskScheduler`.
 ```dart
@@ -477,6 +488,7 @@ TaskScheduler(
         use24HourFormat: true,  // set wether the timeline should use 12/24 hour format, default is 24 hour format
         includePeriod: true,    // set to include period on 12 hour format
         includeMinutes: false, // set to add or remove minutes from the clock (this only applies to a 12 hour format with the minute intervals set to 60)
+        showHoursOnly: true // show/hide minutes on the timeline
     ),
     ...
 )

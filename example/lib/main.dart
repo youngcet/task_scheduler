@@ -356,17 +356,18 @@ class _MyHomePageState extends State<MyHomePage> {
     taskScheduleView = TaskScheduleView(
         taskScheduler: TaskScheduler(
       scheduleStartTime: ScheduleTimeline(hour: 8),
-      scheduleEndTime: ScheduleTimeline(hour: 17),
+      scheduleEndTime: ScheduleTimeline(hour: 20),
       onEmptySlotPressed: handleEmptySlotTap,
       onDragAccept: handleDrop,
       entries: [],
+      //blockedEntries: blockedEntries,
       headers: CalendarView.weekView(),
       timeFormat: SchedulerTimeSettings(
-        minuteInterval: timeInterval,
-        use24HourFormat: true,
-        includePeriod: true,
-        includeMinutes: false,
-      ),
+          minuteInterval: timeInterval,
+          use24HourFormat: true,
+          includePeriod: true,
+          includeMinutes: false,
+          showHoursOnly: true),
     ));
 
     taskScheduler = taskScheduleView.loadScheduleView(entries: entries);

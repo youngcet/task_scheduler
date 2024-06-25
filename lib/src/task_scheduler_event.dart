@@ -39,6 +39,9 @@ class ScheduleEntry extends StatefulWidget {
   static const String empty = 'empty';
   static const String blocked = 'blocked';
   static const String booked = 'booked';
+  static const int defaultYear = 1991;
+  static const int defaultMonth = 1;
+  static const int defaultDay = 1;
 
   ScheduleEntry(
       {Key? key,
@@ -53,6 +56,28 @@ class ScheduleEntry extends StatefulWidget {
       this.options})
       : super(key: key);
 
+  /// Returns the start time of the schedule entry.
+  ///
+  /// The start time is calculated based on the default year, month, and day,
+  /// combined with the specific hour and minutes of the resource.
+  ///
+  /// Returns:
+  /// - A [DateTime] object representing the start time of the schedule entry.
+  DateTime get startTime {
+    return DateTime(
+        defaultYear, defaultMonth, defaultDay, resource.hour, resource.minutes);
+  }
+
+  /// Returns the end time of the schedule entry.
+  ///
+  /// The end time is calculated by adding the duration (in minutes) to the start time.
+  ///
+  /// Returns:
+  /// - A [DateTime] object representing the end time of the schedule entry.
+  DateTime get endTime {
+    return startTime.add(Duration(minutes: duration));
+  }
+
   @override
   _ScheduleEntryState createState() => _ScheduleEntryState();
 }
@@ -63,6 +88,24 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
 
   // Entry color
   var blockOriginalColor;
+
+  /// Indicates whether borders should be displayed around the schedule entry.
+  ///
+  /// When set to `true`, borders will be shown around the schedule entry.
+  /// Defaults to `false`.
+  bool _showBorders = false;
+
+  /// Indicates whether the top border should be displayed around the schedule entry.
+  ///
+  /// When set to `true`, the top border will be shown around the schedule entry.
+  /// Defaults to `false`.
+  bool _showTopBorder = false;
+
+  /// Indicates whether the bottom border should be displayed around the schedule entry.
+  ///
+  /// When set to `true`, the bottom border will be shown around the schedule entry.
+  /// Defaults to `false`.
+  bool _showBottomBorder = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +125,8 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   // A draggable widget
   Widget _draggableSlot() {
     bool isResizable = widget.options?.taskResizeMode?['allowResize'] ?? false;
+    bool _showTooltip = false;
+    bool _isDraggingTop = false;
 
     return (widget.color != Colors.transparent)
         ? Positioned(
@@ -91,173 +136,247 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                 .toDouble(),
             left: config.cellWidth! * widget.resource.index.toDouble(),
             child: SizedBox(
-              width: (config.cellWidth!.toDouble() * entryDuration) -
-                  config.horizontalTaskPadding!,
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: config.horizontalTaskPadding!.toDouble()),
-                child: GestureDetector(
-                    onVerticalDragUpdate: (details) {
-                      if (isResizable) {
-                        final dragDelta = details.delta.dy;
-                        setState(() {
-                          if (widget.duration >= 10) {
-                            widget.duration += dragDelta.toInt();
-                          }
-
-                          if (widget.duration < 10) {
-                            widget.duration += 10;
-                          }
-                        });
-
-                        if (widget.options?.taskResizeMode?['onResizeUpdate'] !=
-                            null) {
-                          widget.options
-                              ?.taskResizeMode?['onResizeUpdate'](ScheduleEntry(
-                            color: widget.color,
-                            id: widget.id,
-                            resource: ResourceScheduleEntry(
-                              index: widget.resource
-                                  .index, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
-                              hour: widget.resource.hour,
-                              minutes: widget.resource.minutes,
-                            ),
-                            duration: widget.duration,
-                          ));
-                        }
-                      }
+                width: (config.cellWidth!.toDouble() * entryDuration) -
+                    config.horizontalTaskPadding!,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: config.horizontalTaskPadding!.toDouble()),
+                  child: GestureDetector(
+                    onDoubleTap: () {
+                      setState(() {
+                        _showTopBorder = !_showTopBorder;
+                        _showBottomBorder = !_showBottomBorder;
+                      });
                     },
-                    onVerticalDragEnd: (details) {
-                      if (isResizable) {
-                        if (widget.options?.taskResizeMode?['onResizeEnd'] !=
-                            null) {
-                          widget.options?.taskResizeMode?['onResizeEnd']({
-                            'id': widget.id,
-                            'resource': widget.resource,
-                            'duration': widget.duration,
-                          });
-                        }
-                      }
-                    },
-                    child: Material(
-                      elevation: 3,
-                      borderRadius: config.borderRadius,
-                      child: Stack(
-                        children: [
-                          LongPressDraggable<List<Map<String, dynamic>>>(
-                            // Data is the value this Draggable stores.
-                            data: [
-                              {
-                                'resourceHour': widget.resource.hour,
-                                'resourceMinute': widget.resource.minutes,
-                                'duration': widget.duration,
-                                'fromId': widget.id,
-                                'resourceIndex': widget.resource.index,
-                                'bgColor': widget.color,
-                                'child': widget.child,
-                                'onTap': widget.onTap,
-                                'data': widget.data,
-                                'taskResizeMode': widget.options?.taskResizeMode
-                              }
-                            ],
-                            feedback: GestureDetector(
-                              onTap: widget.onTap as void Function()? ?? () {},
-                              child: Container(
-                                height: ((widget.duration.toDouble() *
-                                        config.cellHeight!) /
-                                    60), //60 minutes
-                                width: (config.cellWidth!.toDouble() *
-                                    entryDuration),
-                                decoration: BoxDecoration(
-                                    borderRadius: config.borderRadius,
-                                    color: widget.color ??
-                                        Theme.of(context).primaryColor),
-                                child: Center(
-                                  child: widget.child,
-                                ),
-                              ),
+                    child: MouseRegion(
+                        cursor:
+                            _showTopBorder && _showBottomBorder && isResizable
+                                ? SystemMouseCursors.resizeUpDown
+                                : SystemMouseCursors.basic,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide.none,
+                              bottom: _showBottomBorder && isResizable
+                                  ? BorderSide(color: Colors.black, width: 2.0)
+                                  : BorderSide.none,
                             ),
-                            childWhenDragging: Container(
-                              child: const Center(),
-                            ),
-                            onDraggableCanceled: (velocity, offset) {
-                              //_triggerRebuild();
-                            },
-                            child: GestureDetector(
-                              onLongPress: null,
-                              onTap: widget.onTap as void Function()? ?? () {},
-                              child: Container(
-                                height: ((widget.duration.toDouble() *
-                                        config.cellHeight!) /
-                                    60), //.//clamp(0.0, double.infinity), //60 minutes
-                                width: (config.cellWidth!.toDouble() *
-                                    entryDuration),
-                                decoration: BoxDecoration(
-                                    borderRadius: config.borderRadius,
-                                    color: widget.color ??
-                                        Theme.of(context).primaryColor),
-                                child: Center(
-                                  child: widget.child,
-                                ),
-                              ),
-                            ),
-                            onDragUpdate: (details) {
-                              // Get the global position of the drag update
-                              final dragPosition = details.globalPosition;
-
-                              // Get the size of the scrollable area
-                              final scrollableSize =
-                                  MediaQuery.of(context).size;
-
-                              // Define the scroll boundaries
-                              const double scrollThreshold = 50.0;
-                              const double scrollSpeed = 200.0;
-
-                              // Check if the drag position is within the scroll threshold from the edges
-                              final shouldScrollUp =
-                                  dragPosition.dy < scrollThreshold;
-                              final shouldScrollDown = dragPosition.dy >
-                                  scrollableSize.height - scrollThreshold;
-                              final shouldScrollLeft =
-                                  dragPosition.dx < scrollThreshold;
-                              final shouldScrollRight = dragPosition.dx >
-                                  scrollableSize.width - scrollThreshold;
-
-                              // Calculate the scroll directions and amounts
-                              double verticalScrollDelta = 0.0;
-                              double horizontalScrollDelta = 0.0;
-                              if (shouldScrollUp) {
-                                verticalScrollDelta = -scrollSpeed;
-                              } else if (shouldScrollDown) {
-                                verticalScrollDelta = scrollSpeed;
-                              }
-
-                              if (shouldScrollLeft) {
-                                horizontalScrollDelta = -scrollSpeed;
-                              } else if (shouldScrollRight) {
-                                horizontalScrollDelta = scrollSpeed;
-                              }
-                              // Scroll the content based on the calculated deltas
-                              config.verticalScrollController.animateTo(
-                                config.verticalScrollController.offset +
-                                    verticalScrollDelta,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeOut,
-                              );
-                              config.horizontalScrollController.animateTo(
-                                config.horizontalScrollController.offset +
-                                    horizontalScrollDelta,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeOut,
-                              );
-                            },
                           ),
-                        ],
-                      ),
-                    )),
-              ),
-            ),
-          )
+                          child: GestureDetector(
+                            onVerticalDragStart: (details) {
+                              final touchPosition = details.localPosition.dy;
+                              if (touchPosition < 20) {
+                                _isDraggingTop = true;
+                              } else if (touchPosition >
+                                  widget.duration.toDouble() - 20) {
+                                _isDraggingTop = false;
+                              }
+                            },
+                            onVerticalDragUpdate: (details) {
+                              if (isResizable) {
+                                final dragDelta = details.delta.dy;
+
+                                setState(() {
+                                  // if (_isDraggingTop) {
+                                  //   //widget.duration -= dragDelta.toInt();
+                                  //   widget.resource.minutes = dragDelta.toInt();
+                                  // } else {
+                                  //   widget.duration += dragDelta.toInt();
+                                  // }
+
+                                  if (widget.duration >= 10) {
+                                    widget.duration += dragDelta.toInt();
+                                  }
+
+                                  if (widget.duration < 10) {
+                                    widget.duration += 10;
+                                  }
+                                });
+
+                                if (widget.options
+                                        ?.taskResizeMode?['onResizeUpdate'] !=
+                                    null) {
+                                  widget.options?.taskResizeMode?[
+                                      'onResizeUpdate'](ScheduleEntry(
+                                    color: widget.color,
+                                    id: widget.id,
+                                    resource: ResourceScheduleEntry(
+                                      index: widget.resource
+                                          .index, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+                                      hour: widget.resource.hour,
+                                      minutes: widget.resource.minutes,
+                                    ),
+                                    duration: widget.duration,
+                                  ));
+                                }
+                              }
+                            },
+                            onVerticalDragEnd: (details) {
+                              if (isResizable) {
+                                if (widget.options
+                                        ?.taskResizeMode?['onResizeEnd'] !=
+                                    null) {
+                                  widget
+                                      .options?.taskResizeMode?['onResizeEnd']({
+                                    'id': widget.id,
+                                    'resource': widget.resource,
+                                    'duration': widget.duration,
+                                    'color': widget.color
+                                  });
+                                }
+                              }
+                            },
+                            child: Material(
+                              elevation: 3,
+                              //borderRadius: config.borderRadius,
+                              child: Stack(
+                                children: [
+                                  LongPressDraggable<
+                                      List<Map<String, dynamic>>>(
+                                    // Data is the value this Draggable stores.
+                                    data: [
+                                      {
+                                        'resourceHour': widget.resource.hour,
+                                        'resourceMinute':
+                                            widget.resource.minutes,
+                                        'duration': widget.duration,
+                                        'fromId': widget.id,
+                                        'resourceIndex': widget.resource.index,
+                                        'bgColor': widget.color,
+                                        'child': widget.child,
+                                        'onTap': widget.onTap,
+                                        'data': widget.data,
+                                        'taskResizeMode':
+                                            widget.options?.taskResizeMode
+                                      }
+                                    ],
+                                    onDragStarted: () {
+                                      setState(() {
+                                        _showTopBorder = false;
+                                        _showBottomBorder = false;
+                                      });
+                                    },
+                                    feedback: GestureDetector(
+                                      onTap: widget.onTap as void Function()? ??
+                                          () {},
+                                      onTapDown: (_) {
+                                        setState(() {
+                                          _showTooltip = true;
+                                        });
+                                      },
+                                      onTapUp: (_) {
+                                        setState(() {
+                                          _showTooltip = false;
+                                        });
+                                      },
+                                      child: Container(
+                                        height: ((widget.duration.toDouble() *
+                                                config.cellHeight!) /
+                                            60), //60 minutes
+                                        width: (config.cellWidth!.toDouble() *
+                                            entryDuration),
+                                        decoration: BoxDecoration(
+                                            //borderRadius: config.borderRadius,
+                                            color: (widget.color ??
+                                                    Theme.of(context)
+                                                        .primaryColor)
+                                                .withOpacity(0.6)),
+                                        child: Center(
+                                          child: widget.child,
+                                        ),
+                                      ),
+                                    ),
+                                    childWhenDragging: Container(),
+                                    onDraggableCanceled: (velocity, offset) {
+                                      //_triggerRebuild();
+                                    },
+                                    child: GestureDetector(
+                                      onLongPress: null,
+                                      onTap: widget.onTap as void Function()? ??
+                                          () {},
+                                      child: Container(
+                                        height: ((widget.duration.toDouble() *
+                                                config.cellHeight!) /
+                                            60), //.//clamp(0.0, double.infinity), //60 minutes
+                                        width: (config.cellWidth!.toDouble() *
+                                            entryDuration),
+                                        decoration: BoxDecoration(
+                                            //borderRadius: config.borderRadius,
+                                            color: widget.color ??
+                                                Theme.of(context).primaryColor),
+                                        child: Center(
+                                          child: widget.child,
+                                        ),
+                                      ),
+                                    ),
+                                    onDragUpdate: (details) {
+                                      _showTopBorder = false;
+                                      _showBottomBorder = false;
+                                      // Get the global position of the drag update
+                                      final dragPosition =
+                                          details.globalPosition;
+
+                                      // Get the size of the scrollable area
+                                      final scrollableSize =
+                                          MediaQuery.of(context).size;
+
+                                      // Define the scroll boundaries
+                                      const double scrollThreshold = 50.0;
+                                      const double scrollSpeed = 200.0;
+
+                                      // Check if the drag position is within the scroll threshold from the edges
+                                      final shouldScrollUp =
+                                          dragPosition.dy < scrollThreshold;
+                                      final shouldScrollDown = dragPosition.dy >
+                                          scrollableSize.height -
+                                              scrollThreshold;
+                                      final shouldScrollLeft =
+                                          dragPosition.dx < scrollThreshold;
+                                      final shouldScrollRight =
+                                          dragPosition.dx >
+                                              scrollableSize.width -
+                                                  scrollThreshold;
+
+                                      // Calculate the scroll directions and amounts
+                                      double verticalScrollDelta = 0.0;
+                                      double horizontalScrollDelta = 0.0;
+                                      if (shouldScrollUp) {
+                                        verticalScrollDelta = -scrollSpeed;
+                                      } else if (shouldScrollDown) {
+                                        verticalScrollDelta = scrollSpeed;
+                                      }
+
+                                      if (shouldScrollLeft) {
+                                        horizontalScrollDelta = -scrollSpeed;
+                                      } else if (shouldScrollRight) {
+                                        horizontalScrollDelta = scrollSpeed;
+                                      }
+                                      // Scroll the content based on the calculated deltas
+                                      config.verticalScrollController.animateTo(
+                                        config.verticalScrollController.offset +
+                                            verticalScrollDelta,
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut,
+                                      );
+                                      config.horizontalScrollController
+                                          .animateTo(
+                                        config.horizontalScrollController
+                                                .offset +
+                                            horizontalScrollDelta,
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )),
+                  ),
+                )))
         : Positioned(
             top: ((config.cellHeight! *
                         (widget.resource.hour - config.startHour)) +
@@ -292,34 +411,57 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               ? Colors.blue[100]
                               : Colors.transparent;
 
+                          String time = '';
+                          time = (widget.resource.hour < 10)
+                              ? '0${widget.resource.hour}'
+                              : '${widget.resource.hour}';
+                          time = (widget.resource.minutes < 10)
+                              ? '$time:0${widget.resource.minutes}'
+                              : '$time:${widget.resource.minutes}';
+
+                          DateTime startTime = DateTime(1991, 01, 01,
+                              widget.resource.hour, widget.resource.minutes);
+                          DateTime endTime =
+                              startTime.add(Duration(minutes: widget.duration));
+
+                          String entryEndTime = (endTime.hour < 10)
+                              ? '0${endTime.hour}'
+                              : '${endTime.hour}';
+                          entryEndTime = (endTime.minute < 10)
+                              ? '$entryEndTime:0${endTime.minute}'
+                              : '$entryEndTime:${endTime.minute}';
+
                           return InkWell(
                             onTap: widget.onTap as void Function()? ?? () {},
-                            child: Material(
-                              color: color,
-                              child: Container(
-                                height: ((widget.duration.toDouble() *
-                                        config.cellHeight!) /
-                                    60),
-                                width: (config.cellWidth!.toDouble() *
-                                    entryDuration),
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.5,
+                            child: Tooltip(
+                              message:
+                                  isDraggingOver ? '$time - $entryEndTime' : '',
+                              child: Material(
+                                  color: color,
+                                  child: Container(
+                                    height: ((widget.duration.toDouble() *
+                                            config.cellHeight!) /
+                                        60),
+                                    width: (config.cellWidth!.toDouble() *
+                                        entryDuration),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Colors.grey,
+                                          width: 0.5,
+                                        ),
+                                        right: BorderSide(
+                                          color: Colors.grey,
+                                          width: 0.5,
+                                        ),
+                                      ),
+                                      color: widget.color ??
+                                          Theme.of(context).primaryColor,
                                     ),
-                                    right: BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.5,
+                                    child: Center(
+                                      child: widget.child,
                                     ),
-                                  ),
-                                  color: widget.color ??
-                                      Theme.of(context).primaryColor,
-                                ),
-                                child: Center(
-                                  child: widget.child,
-                                ),
-                              ),
+                                  )),
                             ),
                           );
                         },
@@ -382,7 +524,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                     left: config.horizontalTaskPadding!.toDouble()),
                 child: Material(
                   elevation: 3,
-                  borderRadius: config.borderRadius,
+                  //borderRadius: config.borderRadius,
                   child: Stack(
                     children: [
                       InkWell(
@@ -393,7 +535,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               60),
                           width: (config.cellWidth!.toDouble() * entryDuration),
                           decoration: BoxDecoration(
-                              borderRadius: config.borderRadius,
+                              //borderRadius: config.borderRadius,
                               color: widget.color ??
                                   Theme.of(context).primaryColor),
                           child: Center(
@@ -460,6 +602,12 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
           );
   }
 
+  /// Creates a widget representing a blocked entry in the schedule.
+  ///
+  /// The blocked entry is positioned and sized based on the schedule configuration and
+  /// the resource's time and duration.
+  ///
+  /// Returns a [Positioned] widget that contains the blocked entry.
   Widget _blockedEntry() {
     return Positioned(
       top: ((config.cellHeight! * (widget.resource.hour - config.startHour)) +
@@ -509,5 +657,16 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
         ),
       ),
     );
+  }
+
+  _addBorders(bool enableResize) {
+    return (enableResize)
+        ? BoxDecoration(
+            border: Border(
+              top: BorderSide(color: widget.color),
+              bottom: BorderSide(color: widget.color),
+            ),
+          )
+        : null;
   }
 }

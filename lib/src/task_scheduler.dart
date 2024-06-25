@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:math';
 
@@ -48,6 +49,12 @@ class TaskScheduler extends StatefulWidget {
   // block off Resources
   final List<BlockedEntry>? blockedEntries;
 
+  // animate to current time
+  final bool? scrollToCurrentTime;
+
+  // show line at current time
+  final bool? showCurrentTimeLine;
+
   // Constructor for TaskScheduler widget
   const TaskScheduler(
       {Key? key,
@@ -60,6 +67,8 @@ class TaskScheduler extends StatefulWidget {
       this.options,
       this.timeFormat,
       this.blockedEntries,
+      this.scrollToCurrentTime,
+      this.showCurrentTimeLine,
       this.onDragAccept})
       : super(key: key);
 
@@ -148,9 +157,22 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   // Default minutes interval
   int defaultInterval = 60;
 
+  // scroll to current time
+  bool jumpToCurrentTime = true;
+
+  // display current time line
+  bool currentTimeLine = true;
+
+  // timer
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
+
+    if (widget.showCurrentTimeLine != null) {
+      currentTimeLine = widget.showCurrentTimeLine!;
+    }
 
     if (widget.timeFormat?.minuteInterval != null) {
       defaultInterval = widget.timeFormat!.minuteInterval!;
@@ -182,6 +204,42 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
     _timeslots = _get24HourTimeline();
     timelineDividerHeight = _getTimelineDividerHeight(defaultInterval);
+
+    jumpToCurrentTime = widget.scrollToCurrentTime ?? true;
+    Future.delayed(Duration.zero).then((_) {
+      int hour = DateTime.now().hour;
+      if (jumpToCurrentTime == true) {
+        if (hour > widget.scheduleStartTime.hour) {
+          double scrollOffset = (hour - widget.scheduleStartTime.hour) *
+              config.cellHeight!.toDouble();
+          config.verticalScrollController.animateTo(
+            scrollOffset,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutCirc,
+          );
+          timeVerticalController.animateTo(
+            scrollOffset,
+            duration: const Duration(milliseconds: 800),
+            curve: Curves.easeOutCirc,
+          );
+        }
+      }
+    });
+
+    if (currentTimeLine) {
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        setState(() {});
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (currentTimeLine) {
+      _timer?.cancel();
+    }
+
+    super.dispose();
   }
 
   // Method to validate schedule start and end times
@@ -371,6 +429,8 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                             ],
                           ),
                           for (int i = 0; i < tasks.length; i++) tasks[i],
+                          if (currentTimeLine)
+                            _calculateHorizontalLinePosition()
                         ],
                       ),
                     ),
@@ -380,6 +440,34 @@ class _TaskSchedulerState extends State<TaskScheduler> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  /// Calculates the position of a horizontal line representing the current time.
+  ///
+  /// This widget positions a horizontal line based on the current time relative to the
+  /// start time of the schedule. The line's vertical position is calculated by converting
+  /// the current time into minutes and then mapping it to the height of the cells in the schedule.
+  ///
+  /// Returns:
+  /// - A [Positioned] widget containing a [Container] representing the horizontal line.
+  Widget _calculateHorizontalLinePosition() {
+    DateTime now = DateTime.now();
+    int totalMinutesNow = now.hour * 60 + now.minute;
+    num totalMinutesStart = widget.scheduleStartTime.hour * 60 + 0;
+
+    double totalOffset = (totalMinutesNow - totalMinutesStart) *
+        config.cellHeight!.toDouble() /
+        60.0;
+
+    return Positioned(
+      left: 0,
+      top: totalOffset,
+      child: Container(
+        height: 1,
+        width: (config.totalHeaders * config.cellWidth!).toDouble(),
+        color: Colors.red,
       ),
     );
   }
@@ -804,6 +892,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   // Widget timesline
   Widget addTimeSlot(String time) {
     double remainder = 60 / defaultInterval;
+    bool showHoursOnly = widget.timeFormat?.showHoursOnly ?? false;
 
     if (widget.timeFormat?.use24HourFormat != null) {
       if (!widget.timeFormat!.use24HourFormat!) {
@@ -842,6 +931,10 @@ class _TaskSchedulerState extends State<TaskScheduler> {
           }
         }
       }
+    }
+
+    if (showHoursOnly && !time.contains('00')) {
+      time = '';
     }
 
     return SizedBox(

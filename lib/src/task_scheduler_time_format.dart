@@ -12,12 +12,16 @@ class SchedulerTimeSettings {
   // Whether to include minutes
   bool? includeMinutes;
 
+  // show only hours on the clock
+  bool? showHoursOnly;
+
   // Constructor for SchedulerTimeSettings
   SchedulerTimeSettings(
       {this.minuteInterval,
       this.use24HourFormat,
       this.includePeriod,
-      this.includeMinutes});
+      this.includeMinutes,
+      this.showHoursOnly});
 
   // Factory constructor for creating SchedulerTimeSettings with hour format
   factory SchedulerTimeSettings.hourFormat({
@@ -25,11 +29,13 @@ class SchedulerTimeSettings {
     bool period = false,
     int interval = 0,
     bool includeMinutes = true,
+    bool showHoursOnly = false,
   }) {
     return SchedulerTimeSettings(
         minuteInterval: interval,
         use24HourFormat: format,
         includePeriod: period,
-        includeMinutes: includeMinutes);
+        includeMinutes: includeMinutes,
+        showHoursOnly: showHoursOnly);
   }
 }
