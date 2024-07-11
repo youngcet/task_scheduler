@@ -1,15 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:task_scheduler/src/blocked_entry.dart';
-import 'package:task_scheduler/src/calendar_view.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
-import 'package:task_scheduler/src/task_scheduler_timeline.dart';
 import 'config.dart' as config;
 import 'package:task_scheduler/src/task_scheduler_event.dart';
 import 'package:task_scheduler/src/task_scheduler_header.dart';
