@@ -5,6 +5,9 @@ The Task Scheduler Widget is a Flutter component designed to display a schedule 
 [![Pub Version](https://img.shields.io/pub/v/task_scheduler)](https://pub.dev/packages/task_scheduler)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/youngcet/task_scheduler/blob/main/LICENSE)
 
+### Demo
+https://youngcet.github.io/taskscheduler.github.io/#/
+
 ## Features:
 
 1. **Schedule View:** Display a customizable schedule view for managing tasks and appointments.
