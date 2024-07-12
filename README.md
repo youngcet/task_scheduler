@@ -36,6 +36,9 @@ The Task Scheduler Widget is a Flutter component designed to display a schedule 
    - Define callbacks to handle resizing events, including update and completion events.
    - Prevent overlapping of entries during resizing with customizable logic.
 
+### Demo
+https://youngcet.github.io/taskscheduler.github.io/#/
+
 ### Web
 [![Web](https://permanentlink.co.za/img/task_scheduler_web.gif)
 
