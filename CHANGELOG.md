@@ -1,6 +1,15 @@
-## 0.0.1
+## 0.0.3+1
 
-* Initial release.
+* Updated Task Cards with a more cleaner layout
+* Updated blocked entries to include title and stripes
+
+## 0.0.3
+
+* Added a line to indicate the current time.
+* Implemented transparency for past events when dragged.
+* Introduced a start and end time popup during dragging.
+* Updated left-hand clock section to hide minutes.
+* Fix widget resize issue.
 
 ## 0.0.2
 
@@ -14,10 +23,6 @@
 * Block off specific periods on a schedule for a resource.
 * Choose between 12-hour and 24-hour time formats.
 
-## 0.0.3
+## 0.0.1
 
-* Added a line to indicate the current time.
-* Implemented transparency for past events when dragged.
-* Introduced a start and end time popup during dragging.
-* Updated left-hand clock section to hide minutes.
-* Fix widget resize issue.
+* Initial release.

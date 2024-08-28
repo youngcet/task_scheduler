@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,7 +9,7 @@ class TaskScheduleView {
   final TaskScheduler taskScheduler;
 
   // Constructor for TaskScheduleView
-  const TaskScheduleView({required this.taskScheduler});
+  TaskScheduleView({required this.taskScheduler});
 
   // Method to load the schedule view with given entries
   TaskScheduler loadScheduleView({required List<ScheduleEntry> entries}) {
@@ -85,7 +84,7 @@ class TaskScheduleView {
 
         return entryEndTime.isAfter(startTime);
       });
-
+      
       for (var element in filteredEntries) {
         DateTime startTime = DateTime(
             ScheduleEntry.defaultYear,
@@ -93,7 +92,7 @@ class TaskScheduleView {
             ScheduleEntry.defaultDay,
             element.resource.hour,
             element.resource.minutes);
-
+        
         if (entryEndTime.isAfter(startTime)) {
           // entry overlaps with another entry
           // minus the difference in minutes
@@ -325,7 +324,7 @@ class TaskScheduleView {
                 minutes: endTime.minute),
             duration: interval,
             options: TaskSchedulerSettings(isTaskDraggable: false),
-            data: const {'type': ScheduleEntry.blocked},
+            data: {'type': ScheduleEntry.blocked, 'title': entry.title ?? ''},
           ));
 
           endTime = endTime.add(Duration(minutes: interval));

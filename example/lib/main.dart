@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:task_scheduler/task_scheduler.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    const MyApp()
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -61,6 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<String> resources = ['Cedric', 'Yung', 'Moss', 'Matt'];
 
+  String selectedItem = 'Custom Header';
+  final List<String> items = ['Custom Header', 'Week View', 'Week View With Month'];
+
+  List<ScheduleResourceHeader> taskSchedulerHeader = [];
+
   // declare resource headers
   List<ScheduleResourceHeader> headers = [
     ScheduleResourceHeader(
@@ -79,9 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
-                    'https://cdn.pixabay.com/photo/2018/08/28/12/41/avatar-3637425_1280.png'), // Replace URL with your image URL
+                    'https://cdn.pixabay.com/photo/2016/11/29/01/44/hands-1866619_640.jpg'), // Replace URL with your image URL
               ),
             ),
             Positioned(
@@ -119,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    'https://cdn.pixabay.com/photo/2020/05/08/02/55/african-american-5143919_1280.png'),
+                    'https://cdn.pixabay.com/photo/2015/02/17/08/46/face-639139_640.jpg'),
               ),
             ),
             Positioned(
@@ -155,9 +162,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
-                    'https://cdn.pixabay.com/photo/2016/05/26/14/39/parrot-1417286_1280.png'),
+                    'https://cdn.pixabay.com/photo/2015/09/25/09/49/light-956980_640.jpg'),
               ),
             ),
             Positioned(
@@ -193,9 +200,47 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 2,
                 ),
               ),
+              child: const CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://cdn.pixabay.com/photo/2017/06/30/15/55/camera-2458579_640.jpg'),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
+                ),
+                child: const Text(
+                  'Matt',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        )),
+        ScheduleResourceHeader(
+        id: '5',
+        position: 4,
+        title: 'Minnieh',
+        child: Stack(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              ),
               child: CircleAvatar(
                 backgroundImage: NetworkImage(
-                    'https://cdn.pixabay.com/photo/2016/05/12/23/03/lamb-1388937_1280.png'),
+                    'https://cdn.pixabay.com/photo/2020/04/23/19/15/face-5083690_1280.jpg'),
               ),
             ),
             Positioned(
@@ -208,7 +253,83 @@ class _MyHomePageState extends State<MyHomePage> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
                 child: Text(
-                  'Matt',
+                  'Minnieh',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        )),
+        ScheduleResourceHeader(
+        id: '6',
+        position: 5,
+        title: 'Emon',
+        child: Stack(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://cdn.pixabay.com/photo/2017/11/26/01/46/valley-2977990_640.jpg'),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
+                ),
+                child: Text(
+                  'Emon',
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            ),
+          ],
+        )),
+        ScheduleResourceHeader(
+        id: '7',
+        position: 6,
+        title: 'Mpho',
+        child: Stack(
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2,
+                ),
+              ),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    'https://cdn.pixabay.com/photo/2017/10/10/16/58/hand-2837954_640.jpg'),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
+                ),
+                child: Text(
+                  'Mpho',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
               ),
@@ -225,7 +346,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<ScheduleEntry> entries = [
       ScheduleEntry(
         color: Colors.blue,
-        id: '123',
+        id: generateId(5),
         resource: ResourceScheduleEntry(
           index:
               0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -238,15 +359,29 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Support"),
+              content: Text("Team Meeting"),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Text('Support', style: TextStyle(fontSize: 14)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Team Meeting',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              "Daily team sync-up",
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        )
       ),
       ScheduleEntry(
         color: Colors.green,
-        id: '123444',
+        id: generateId(5),
         resource: ResourceScheduleEntry(
           index:
               0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -264,18 +399,29 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Plan"),
+              content: Text("Code Review"),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Text(
-          'Plan',
-          style: TextStyle(fontSize: 14),
-        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Code Review',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              'Review pull requests',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        )
       ),
       ScheduleEntry(
         color: Colors.pink,
-        id: '12344',
+        id: generateId(5),
         resource: ResourceScheduleEntry(
           index:
               1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -288,15 +434,29 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Project"),
+              content: Text("Client Presentation"),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Text('Project', style: TextStyle(fontSize: 14)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Client Presentation',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              'Update client meeting',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        )
       ),
       ScheduleEntry(
         color: Colors.orange,
-        id: '12345',
+        id: generateId(5),
         resource: ResourceScheduleEntry(
           index:
               3, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -309,11 +469,95 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         onTap: () {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("General"),
+              content: Text("Development Session"),
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Text('General', style: TextStyle(fontSize: 14)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Development Session',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              'Feature development work',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
+      ),
+      ScheduleEntry(
+        color: Colors.yellow,
+        id: generateId(5),
+        resource: ResourceScheduleEntry(
+          index:
+              5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+          hour: 9,
+          minutes: 0,
+        ),
+        duration: 60,
+        options: TaskSchedulerSettings(
+          isTaskDraggable: true, // false to disable drag
+        ),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Task Scheduler"),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating));
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Task Scheduler',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              'Bug fixing',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
+      ),
+      ScheduleEntry(
+        color: Colors.yellow,
+        id: generateId(5),
+        resource: ResourceScheduleEntry(
+          index:
+              2, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+          hour: 14,
+          minutes: 0,
+        ),
+        duration: 60,
+        options: TaskSchedulerSettings(
+          isTaskDraggable: true, // false to disable drag
+        ),
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Testing and QA"),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating));
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: const [
+            Text(
+              'Testing and QA',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 4.0),
+            Text(
+              'Test new features',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
       )
     ];
 
@@ -349,7 +593,78 @@ class _MyHomePageState extends State<MyHomePage> {
             hour: 10,
             minutes: 30,
           ),
-          duration: 60)
+          duration: 60),
+        BlockedEntry(
+          resource: ResourceScheduleEntry(
+            index:
+                5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 8,
+            minutes: 30,
+          ),
+          duration: 240),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                2, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                3, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                4, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Lunch break',
+          resource: ResourceScheduleEntry(
+            index:
+                5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 13,
+            minutes: 0,
+          ),
+          duration: 30),
+          BlockedEntry(
+            title: 'Off',
+          resource: ResourceScheduleEntry(
+            index:
+                6, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 8,
+            minutes: 0,
+          ),
+          duration: 600),
     ];
 
     // instatiate the TaskScheduleView and pass TaskScheduler
@@ -360,14 +675,12 @@ class _MyHomePageState extends State<MyHomePage> {
       onEmptySlotPressed: handleEmptySlotTap,
       onDragAccept: handleDrop,
       entries: [],
-      //blockedEntries: blockedEntries,
-      headers: CalendarView.weekView(),
+      blockedEntries: blockedEntries,
+      headers: headers,
       timeFormat: SchedulerTimeSettings(
           minuteInterval: timeInterval,
           use24HourFormat: true,
-          includePeriod: true,
-          includeMinutes: false,
-          showHoursOnly: true),
+          includePeriod: true,),
     ));
 
     taskScheduler = taskScheduleView.loadScheduleView(entries: entries);
@@ -501,7 +814,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       print('clicked');
                       // implement onTap logic
                     },
-                    child: Text(title, style: TextStyle(fontSize: 14)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 4.0),
+                        Text(
+                          '08:00 AM - 10:00 AM',
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                        ),
+                      ],
+                    ),
                   );
 
                   // check that the resource slot is available
@@ -549,11 +876,72 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child:
-              taskScheduler), // This trailing comma makes auto-formatting nicer for build methods.
+      body: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0), // Add padding around the dropdown
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // Make the row as wide as its content
+                  children: <Widget>[
+                    Text(
+                      'Select Header:',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    SizedBox(width: 10),// Align the dropdown to the left
+                    DropdownButton<String>(
+                      focusColor: Colors.white,
+                      value: selectedItem,
+                      onChanged: (String? newValue) {
+                        if (newValue == 'Custom Header'){
+                          taskSchedulerHeader = headers;
+                          inspect(taskSchedulerHeader);
+                        }
+
+                        if (newValue == 'Week View'){
+                          taskSchedulerHeader = CalendarView.weekView();
+                        }
+
+                        if (newValue == 'Week View With Month'){
+                          taskSchedulerHeader = CalendarView.weekViewWithMonth();
+                        }
+
+                        TaskScheduler newTaskScheduler = TaskScheduler(
+                          scheduleStartTime: taskScheduler.scheduleStartTime,
+                          scheduleEndTime: taskScheduler.scheduleEndTime,
+                          onEmptySlotPressed: handleEmptySlotTap,
+                          onDragAccept: handleDrop,
+                          entries: taskScheduler.entries,
+                          headers: taskSchedulerHeader,
+                          timeFormat: taskScheduler.timeFormat,
+                        );
+
+                        setState(() {
+                          selectedItem = newValue!;
+                          taskScheduler = newTaskScheduler;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Showing $selectedItem')),
+                        );
+                      },
+                      items: items.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ]
+                ),
+              ),
+              const SizedBox(height: 20), 
+              Expanded(
+              child: Center(
+                child: taskScheduler
+              ),
+            ),
+            ],
+          )
     );
   }
 }

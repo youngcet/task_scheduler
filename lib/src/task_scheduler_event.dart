@@ -1,8 +1,6 @@
 import 'dart:core';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:task_scheduler/src/task_scheduler.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'package:task_scheduler/src/task_scheduler_settings.dart';
 import 'config.dart' as config;
@@ -127,6 +125,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
     bool isResizable = widget.options?.taskResizeMode?['allowResize'] ?? false;
     bool _showTooltip = false;
     bool _isDraggingTop = false;
+    Color entryBorderColor = widget.color.withOpacity(1.0);
 
     return (widget.color != Colors.transparent)
         ? Positioned(
@@ -281,7 +280,9 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                                     Theme.of(context)
                                                         .primaryColor)
                                                 .withOpacity(0.6)),
-                                        child: Center(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0, bottom: 5.0), 
+                                          alignment: Alignment.topLeft,                   
                                           child: widget.child,
                                         ),
                                       ),
@@ -301,12 +302,20 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                         width: (config.cellWidth!.toDouble() *
                                             entryDuration),
                                         decoration: BoxDecoration(
+                                          border: Border(
+                                              left: BorderSide(
+                                                color: entryBorderColor, 
+                                                width: 2.5,
+                                              ),
+                                            ),
                                             //borderRadius: config.borderRadius,
-                                            color: widget.color ??
+                                            color: widget.color.withOpacity(0.4) ??
                                                 Theme.of(context).primaryColor),
-                                        child: Center(
+                                        child: Container(
+                                          margin: const EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0, bottom: 5.0), 
+                                          alignment: Alignment.topLeft,                   
                                           child: widget.child,
-                                        ),
+                                        )
                                       ),
                                     ),
                                     onDragUpdate: (details) {
@@ -633,7 +642,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               60),
                       width: (config.cellWidth!.toDouble() * entryDuration),
                       decoration: BoxDecoration(
-                        border: Border(
+                        border: const Border(
                           bottom: BorderSide(
                             color: Colors.grey,
                             width: 0.5,
@@ -644,9 +653,21 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                           ),
                         ),
                         color: widget.color ?? Theme.of(context).primaryColor,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: const Alignment(-0.9, -0.8),
+                          stops: const [0.0, 0.5, 0.5, 1],
+                          colors: [
+                              widget.color,
+                              widget.color,
+                              widget.color.withOpacity(0.5),
+                              widget.color.withOpacity(0.5),
+                          ],
+                          tileMode: TileMode.repeated,
+                      )
                       ),
                       child: Center(
-                        child: widget.child,
+                        child: Text(widget.data!['title'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey[500]),),
                       ),
                     ),
                   ),

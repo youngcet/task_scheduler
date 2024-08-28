@@ -268,6 +268,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
   @override
   Widget build(BuildContext context) {
+    
     config.horizontalScrollController.addListener(() {
       dayHorizontalController.jumpTo(config.horizontalScrollController.offset);
     });
@@ -276,80 +277,80 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     });
 
     return GestureDetector(
-      child: Container(
-        color: settings.backgroundColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            SingleChildScrollView(
-              controller: dayHorizontalController,
-              scrollDirection: Axis.horizontal,
-              physics: const NeverScrollableScrollPhysics(),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const SizedBox(
-                    width: 60,
-                  ),
-                  for (int i = 0; i < config.totalHeaders; i++)
-                    widget.headers[i],
-                ],
+        child: Container(
+          color: settings.backgroundColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              SingleChildScrollView(
+                controller: dayHorizontalController,
+                scrollDirection: Axis.horizontal,
+                physics: const NeverScrollableScrollPhysics(),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const SizedBox(
+                      width: 60,
+                    ),
+                    for (int i = 0; i < config.totalHeaders; i++)
+                      widget.headers[i],
+                  ],
+                ),
               ),
-            ),
-            Container(
-              height: 1,
-              color: settings.dividerColor ?? Theme.of(context).primaryColor,
-            ),
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context)
-                        .copyWith(scrollbars: false),
-                    child: SingleChildScrollView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: timeVerticalController,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              for (int i = 0; i < _timeslots.length; i++)
-                                addTimeSlot(_timeslots[i]),
-                            ],
-                          ),
-                          Container(
-                            height: (config.totalHours * config.cellHeight!) +
-                                timelineDividerHeight -
-                                config.cellHeight!,
-                            width: 1,
-                            color: settings.dividerColor ??
-                                Theme.of(context).primaryColor,
-                          ),
-                        ],
+              Container(
+                height: 1,
+                color: settings.dividerColor ?? Theme.of(context).primaryColor,
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        controller: timeVerticalController,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                for (int i = 0; i < _timeslots.length; i++)
+                                  addTimeSlot(_timeslots[i]),
+                              ],
+                            ),
+                            Container(
+                              height: (config.totalHours * config.cellHeight!) +
+                                  timelineDividerHeight -
+                                  config.cellHeight!,
+                              width: 1,
+                              color: settings.dividerColor ??
+                                  Theme.of(context).primaryColor,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                      child: Stack(
-                    children: [
-                      buildScheduleGrid(),
-                    ],
-                  )),
-                ],
+                    Expanded(
+                        child: Stack(
+                      children: [
+                        buildScheduleGrid(),
+                      ],
+                    )),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
     );
   }
 
@@ -459,10 +460,22 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return Positioned(
       left: 0,
       top: totalOffset,
-      child: Container(
-        height: 1,
-        width: (config.totalHeaders * config.cellWidth!).toDouble(),
-        color: Colors.red,
+      child: Row(
+        children: [
+          Container(
+            width: 8, 
+            height: 8, 
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+          ),
+          Container(
+            height: 1,
+            width: (config.totalHeaders * config.cellWidth!).toDouble(),
+            color: Colors.red,
+          ),
+        ],
       ),
     );
   }
