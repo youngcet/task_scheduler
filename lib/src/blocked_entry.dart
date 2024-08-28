@@ -4,6 +4,9 @@ class BlockedEntry {
   /// Resource
   ResourceScheduleEntry resource;
 
+  // title
+  String? title;
+
   /// duration
   int duration;
 
@@ -11,5 +14,6 @@ class BlockedEntry {
   BlockedEntry({
     required this.resource,
     required this.duration,
+    this.title
   });
 }

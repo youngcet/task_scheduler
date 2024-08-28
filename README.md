@@ -422,6 +422,7 @@ Block off specific periods on a schedule for a resource.
 You can specify entries to block with the `BlockedEntry` object.
 ```dart
 BlockedEntry(
+    title: 'Lunch break', // entry title (optional)
     resource: ResourceScheduleEntry(
       index: 2, // the resource to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
       hour: 8, // start hour to block
