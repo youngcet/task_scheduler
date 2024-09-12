@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:task_scheduler/task_scheduler.dart';
 
 void main() {
-  runApp(
-    const MyApp()
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -64,7 +62,11 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> resources = ['Cedric', 'Yung', 'Moss', 'Matt'];
 
   String selectedItem = 'Custom Header';
-  final List<String> items = ['Custom Header', 'Week View', 'Week View With Month'];
+  final List<String> items = [
+    'Custom Header',
+    'Week View',
+    'Week View With Month'
+  ];
 
   List<ScheduleResourceHeader> taskSchedulerHeader = [];
 
@@ -222,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         )),
-        ScheduleResourceHeader(
+    ScheduleResourceHeader(
         id: '5',
         position: 4,
         title: 'Minnieh',
@@ -260,7 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         )),
-        ScheduleResourceHeader(
+    ScheduleResourceHeader(
         id: '6',
         position: 5,
         title: 'Emon',
@@ -298,7 +300,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         )),
-        ScheduleResourceHeader(
+    ScheduleResourceHeader(
         id: '7',
         position: 6,
         title: 'Mpho',
@@ -345,115 +347,112 @@ class _MyHomePageState extends State<MyHomePage> {
     // declare entries
     List<ScheduleEntry> entries = [
       ScheduleEntry(
-        color: Colors.blue,
-        id: generateId(5),
-        resource: ResourceScheduleEntry(
-          index:
-              0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
-          hour: 9,
-          minutes: 60,
-        ),
-        duration: 60,
-        options: TaskSchedulerSettings(
-          isTaskDraggable: true, // false to disable drag
-        ),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Team Meeting"),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating));
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Team Meeting',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              "Daily team sync-up",
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-            ),
-          ],
-        )
-      ),
-      ScheduleEntry(
-        color: Colors.green,
-        id: generateId(5),
-        resource: ResourceScheduleEntry(
-          index:
-              0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
-          hour: 8,
-          minutes: 30,
-        ),
-        duration: 30,
-        options: TaskSchedulerSettings(
-          isTaskDraggable: true, // false to disable drag
-          taskResizeMode: {
-            'allowResize': true,
-            'onResizeEnd': onResizeEnd,
-            'onResizeUpdate': onResizeUpdate
+          color: Colors.blue,
+          id: generateId(5),
+          resource: ResourceScheduleEntry(
+            index:
+                0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 9,
+            minutes: 60,
+          ),
+          duration: 60,
+          options: TaskSchedulerSettings(
+            isTaskDraggable: true, // false to disable drag
+          ),
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Team Meeting"),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating));
           },
-        ),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Code Review"),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating));
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Code Review',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              'Review pull requests',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-            ),
-          ],
-        )
-      ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Team Meeting',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 4.0),
+              Text(
+                "Daily team sync-up",
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              ),
+            ],
+          )),
       ScheduleEntry(
-        color: Colors.pink,
-        id: generateId(5),
-        resource: ResourceScheduleEntry(
-          index:
-              1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
-          hour: 8,
-          minutes: 0,
-        ),
-        duration: 120,
-        options: TaskSchedulerSettings(
-          isTaskDraggable: true, // false to disable drag
-        ),
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Client Presentation"),
-              backgroundColor: Colors.green,
-              behavior: SnackBarBehavior.floating));
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text(
-              'Client Presentation',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              'Update client meeting',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-            ),
-          ],
-        )
-      ),
+          color: Colors.green,
+          id: generateId(5),
+          resource: ResourceScheduleEntry(
+            index:
+                0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 8,
+            minutes: 30,
+          ),
+          duration: 30,
+          options: TaskSchedulerSettings(
+            isTaskDraggable: true, // false to disable drag
+            taskResizeMode: {
+              'allowResize': true,
+              'onResizeEnd': onResizeEnd,
+              'onResizeUpdate': onResizeUpdate
+            },
+          ),
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Code Review"),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating));
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Code Review',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 4.0),
+              Text(
+                'Review pull requests',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              ),
+            ],
+          )),
+      ScheduleEntry(
+          color: Colors.pink,
+          id: generateId(5),
+          resource: ResourceScheduleEntry(
+            index:
+                1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+            hour: 8,
+            minutes: 0,
+          ),
+          duration: 120,
+          options: TaskSchedulerSettings(
+            isTaskDraggable: true, // false to disable drag
+          ),
+          onTap: () {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Client Presentation"),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating));
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Client Presentation',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 4.0),
+              Text(
+                'Update client meeting',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+              ),
+            ],
+          )),
       ScheduleEntry(
         color: Colors.orange,
         id: generateId(5),
@@ -594,7 +593,7 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 30,
           ),
           duration: 60),
-        BlockedEntry(
+      BlockedEntry(
           resource: ResourceScheduleEntry(
             index:
                 5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -602,8 +601,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 30,
           ),
           duration: 240),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -611,8 +610,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -620,8 +619,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 2, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -629,8 +628,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 3, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -638,8 +637,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 4, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -647,8 +646,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Lunch break',
+      BlockedEntry(
+          title: 'Lunch break',
           resource: ResourceScheduleEntry(
             index:
                 5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -656,8 +655,8 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 0,
           ),
           duration: 30),
-          BlockedEntry(
-            title: 'Off',
+      BlockedEntry(
+          title: 'Off',
           resource: ResourceScheduleEntry(
             index:
                 6, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -670,17 +669,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // instatiate the TaskScheduleView and pass TaskScheduler
     taskScheduleView = TaskScheduleView(
         taskScheduler: TaskScheduler(
-      scheduleStartTime: ScheduleTimeline(hour: 8),
-      scheduleEndTime: ScheduleTimeline(hour: 20),
+      scheduleStartTime: ScheduleTimeline(hour: 0),
+      scheduleEndTime: ScheduleTimeline(hour: 24),
       onEmptySlotPressed: handleEmptySlotTap,
       onDragAccept: handleDrop,
       entries: [],
       blockedEntries: blockedEntries,
       headers: headers,
       timeFormat: SchedulerTimeSettings(
-          minuteInterval: timeInterval,
-          use24HourFormat: true,
-          includePeriod: true,),
+        minuteInterval: timeInterval,
+        use24HourFormat: true,
+      ),
     ));
 
     taskScheduler = taskScheduleView.loadScheduleView(entries: entries);
@@ -820,12 +819,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       children: [
                         Text(
                           title,
-                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 4.0),
                         Text(
                           '08:00 AM - 10:00 AM',
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                          style: TextStyle(
+                              fontSize: 12, fontWeight: FontWeight.normal),
                         ),
                       ],
                     ),
@@ -871,38 +872,41 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0), // Add padding around the dropdown
-                child: Row(
-                  mainAxisSize: MainAxisSize.min, // Make the row as wide as its content
+        appBar: AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+        ),
+        body: Column(
+          children: <Widget>[
+            Padding(
+              padding:
+                  const EdgeInsets.all(16.0), // Add padding around the dropdown
+              child: Row(
+                  mainAxisSize:
+                      MainAxisSize.min, // Make the row as wide as its content
                   children: <Widget>[
                     Text(
                       'Select Header:',
                       style: TextStyle(fontSize: 16),
                     ),
-                    SizedBox(width: 10),// Align the dropdown to the left
+                    SizedBox(width: 10), // Align the dropdown to the left
                     DropdownButton<String>(
                       focusColor: Colors.white,
                       value: selectedItem,
                       onChanged: (String? newValue) {
-                        if (newValue == 'Custom Header'){
+                        if (newValue == 'Custom Header') {
                           taskSchedulerHeader = headers;
                           inspect(taskSchedulerHeader);
                         }
 
-                        if (newValue == 'Week View'){
+                        if (newValue == 'Week View') {
                           taskSchedulerHeader = CalendarView.weekView();
                         }
 
-                        if (newValue == 'Week View With Month'){
-                          taskSchedulerHeader = CalendarView.weekViewWithMonth();
+                        if (newValue == 'Week View With Month') {
+                          taskSchedulerHeader =
+                              CalendarView.weekViewWithMonth();
                         }
 
                         TaskScheduler newTaskScheduler = TaskScheduler(
@@ -924,24 +928,21 @@ class _MyHomePageState extends State<MyHomePage> {
                           SnackBar(content: Text('Showing $selectedItem')),
                         );
                       },
-                      items: items.map<DropdownMenuItem<String>>((String value) {
+                      items:
+                          items.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
                         );
                       }).toList(),
                     ),
-                  ]
-                ),
-              ),
-              const SizedBox(height: 20), 
-              Expanded(
-              child: Center(
-                child: taskScheduler
-              ),
+                  ]),
             ),
-            ],
-          )
-    );
+            const SizedBox(height: 20),
+            Expanded(
+              child: Center(child: taskScheduler),
+            ),
+          ],
+        ));
   }
 }

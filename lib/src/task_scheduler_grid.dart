@@ -84,7 +84,7 @@ class TaskScheduleView {
 
         return entryEndTime.isAfter(startTime);
       });
-      
+
       for (var element in filteredEntries) {
         DateTime startTime = DateTime(
             ScheduleEntry.defaultYear,
@@ -92,7 +92,7 @@ class TaskScheduleView {
             ScheduleEntry.defaultDay,
             element.resource.hour,
             element.resource.minutes);
-        
+
         if (entryEndTime.isAfter(startTime)) {
           // entry overlaps with another entry
           // minus the difference in minutes

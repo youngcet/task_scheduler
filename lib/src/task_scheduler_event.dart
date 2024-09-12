@@ -281,8 +281,12 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                                         .primaryColor)
                                                 .withOpacity(0.6)),
                                         child: Container(
-                                          margin: const EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0, bottom: 5.0), 
-                                          alignment: Alignment.topLeft,                   
+                                          margin: const EdgeInsets.only(
+                                              left: 5.0,
+                                              top: 5.0,
+                                              right: 5.0,
+                                              bottom: 5.0),
+                                          alignment: Alignment.topLeft,
                                           child: widget.child,
                                         ),
                                       ),
@@ -296,27 +300,32 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                       onTap: widget.onTap as void Function()? ??
                                           () {},
                                       child: Container(
-                                        height: ((widget.duration.toDouble() *
-                                                config.cellHeight!) /
-                                            60), //.//clamp(0.0, double.infinity), //60 minutes
-                                        width: (config.cellWidth!.toDouble() *
-                                            entryDuration),
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                              left: BorderSide(
-                                                color: entryBorderColor, 
-                                                width: 2.5,
+                                          height: ((widget.duration.toDouble() *
+                                                  config.cellHeight!) /
+                                              60), //.//clamp(0.0, double.infinity), //60 minutes
+                                          width: (config.cellWidth!.toDouble() *
+                                              entryDuration),
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                left: BorderSide(
+                                                  color: entryBorderColor,
+                                                  width: 2.5,
+                                                ),
                                               ),
-                                            ),
-                                            //borderRadius: config.borderRadius,
-                                            color: widget.color.withOpacity(0.4) ??
-                                                Theme.of(context).primaryColor),
-                                        child: Container(
-                                          margin: const EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0, bottom: 5.0), 
-                                          alignment: Alignment.topLeft,                   
-                                          child: widget.child,
-                                        )
-                                      ),
+                                              //borderRadius: config.borderRadius,
+                                              color: widget.color
+                                                      .withOpacity(0.4) ??
+                                                  Theme.of(context)
+                                                      .primaryColor),
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 5.0,
+                                                top: 5.0,
+                                                right: 5.0,
+                                                bottom: 5.0),
+                                            alignment: Alignment.topLeft,
+                                            child: widget.child,
+                                          )),
                                     ),
                                     onDragUpdate: (details) {
                                       _showTopBorder = false;
@@ -642,32 +651,37 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               60),
                       width: (config.cellWidth!.toDouble() * entryDuration),
                       decoration: BoxDecoration(
-                        border: const Border(
-                          bottom: BorderSide(
-                            color: Colors.grey,
-                            width: 0.5,
+                          border: const Border(
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 0.5,
+                            ),
                           ),
-                          right: BorderSide(
-                            color: Colors.grey,
-                            width: 0.5,
-                          ),
-                        ),
-                        color: widget.color ?? Theme.of(context).primaryColor,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: const Alignment(-0.9, -0.8),
-                          stops: const [0.0, 0.5, 0.5, 1],
-                          colors: [
+                          color: widget.color ?? Theme.of(context).primaryColor,
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: const Alignment(-0.9, -0.8),
+                            stops: const [0.0, 0.5, 0.5, 1],
+                            colors: [
                               widget.color,
                               widget.color,
                               widget.color.withOpacity(0.5),
                               widget.color.withOpacity(0.5),
-                          ],
-                          tileMode: TileMode.repeated,
-                      )
-                      ),
+                            ],
+                            tileMode: TileMode.repeated,
+                          )),
                       child: Center(
-                        child: Text(widget.data!['title'], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.grey[500]),),
+                        child: Text(
+                          widget.data!['title'],
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Colors.grey[500]),
+                        ),
                       ),
                     ),
                   ),
