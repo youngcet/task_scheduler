@@ -11,9 +11,5 @@ class BlockedEntry {
   int duration;
 
   // constructor
-  BlockedEntry({
-    required this.resource,
-    required this.duration,
-    this.title
-  });
+  BlockedEntry({required this.resource, required this.duration, this.title});
 }

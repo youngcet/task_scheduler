@@ -6,14 +6,14 @@ import 'package:task_scheduler/task_scheduler.dart';
 void main() {
   group('MyApp widget test', () {
     testWidgets('MyApp widget builds correctly', (WidgetTester tester) async {
-      await tester.pumpWidget(MyApp());
+      await tester.runAsync(() => tester.pumpWidget(MyApp()));
       expect(find.byType(MyApp), findsOneWidget);
     });
 
     testWidgets('MyHomePage title is rendered correctly',
         (WidgetTester tester) async {
-      await tester.pumpWidget(
-          const MaterialApp(home: MyHomePage(title: 'Task Scheduler Demo')));
+      await tester.runAsync(() => tester.pumpWidget(
+          const MaterialApp(home: MyHomePage(title: 'Task Scheduler Demo'))));
       expect(find.text('Task Scheduler Demo'), findsOneWidget);
     });
 
@@ -26,13 +26,13 @@ void main() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Text(
                 'Yung',
                 style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 3,
               ),
             ],
@@ -44,13 +44,13 @@ void main() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Text(
                 'Cedric',
                 style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 3,
               ),
             ],
@@ -62,13 +62,13 @@ void main() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Text(
                 'Moss',
                 style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 3,
               ),
             ],
@@ -80,13 +80,13 @@ void main() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+            children: const <Widget>[
               Text(
                 'Matt',
                 style:
-                    const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 3,
               ),
             ],
@@ -128,8 +128,8 @@ void main() {
       TaskScheduler scheduleView =
           taskScheduleView.loadScheduleView(entries: entries);
 
-      await tester.pumpWidget(
-          MaterialApp(home: Scaffold(body: Center(child: scheduleView))));
+      await tester.runAsync(() => tester.pumpWidget(
+          MaterialApp(home: Scaffold(body: Center(child: scheduleView)))));
       expect(find.byType(ScheduleEntry), findsNWidgets(78));
     });
   });
@@ -178,12 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: const <Widget>[
           Text(
             'title 1',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          const SizedBox(
+          SizedBox(
             height: 3,
           ),
         ],
@@ -195,12 +195,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: const <Widget>[
           Text(
             'title 2',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          const SizedBox(
+          SizedBox(
             height: 3,
           ),
         ],
@@ -212,12 +212,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: const <Widget>[
           Text(
             'title 3',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          const SizedBox(
+          SizedBox(
             height: 3,
           ),
         ],
@@ -229,12 +229,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
+        children: const <Widget>[
           Text(
             'title 4',
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
           ),
-          const SizedBox(
+          SizedBox(
             height: 3,
           ),
         ],
