@@ -236,7 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.amber,
                   width: 2,
                 ),
               ),
@@ -274,11 +274,11 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.cyan,
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cdn.pixabay.com/photo/2017/11/26/01/46/valley-2977990_640.jpg'),
               ),
@@ -287,12 +287,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Emon',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -312,11 +312,11 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.yellow,
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cdn.pixabay.com/photo/2017/10/10/16/58/hand-2837954_640.jpg'),
               ),
@@ -325,12 +325,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Mpho',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -669,8 +669,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // instatiate the TaskScheduleView and pass TaskScheduler
     taskScheduleView = TaskScheduleView(
         taskScheduler: TaskScheduler(
-      scheduleStartTime: ScheduleTimeline(hour: 0),
-      scheduleEndTime: ScheduleTimeline(hour: 24),
+      scheduleStartTime: ScheduleTimeline(hour: 8),
+      scheduleEndTime: ScheduleTimeline(hour: 17),
       onEmptySlotPressed: handleEmptySlotTap,
       onDragAccept: handleDrop,
       entries: [],
@@ -696,7 +696,7 @@ class _MyHomePageState extends State<MyHomePage> {
       headers: taskScheduler.headers,
       timeFormat: taskScheduler.timeFormat,
     ));
-
+    
     setState(() {
       try {
         taskScheduler = view.updateScheduleView(view, data);
