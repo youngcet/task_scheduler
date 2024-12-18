@@ -1,4 +1,8 @@
 ## 0.0.3+2
+* Fixed a bug where an entry would disappear when dragged after encountering an overlapping exception.
+* Minor bug fixes
+
+## 0.0.3+2
 
 * Removed restrictions to allow start and end times to extend up to midnight, covering the full 24-hour day.
 * Fixed minute duplication in the 12-hour format when including the period (AM/PM).

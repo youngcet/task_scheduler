@@ -68,6 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
     'Week View With Month'
   ];
 
+  final List<String> intervals = [
+    '10',
+    '15',
+    '20',
+    '30',
+    '60'
+  ];
+
   List<ScheduleResourceHeader> taskSchedulerHeader = [];
 
   // declare resource headers
@@ -701,7 +709,10 @@ class _MyHomePageState extends State<MyHomePage> {
       try {
         taskScheduler = view.updateScheduleView(view, data);
       } catch (e) {
-        print(e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Error: $e"),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating));
       }
     });
   }
@@ -886,18 +897,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisSize:
                       MainAxisSize.min, // Make the row as wide as its content
                   children: <Widget>[
-                    Text(
+                    const Text(
                       'Select Header:',
                       style: TextStyle(fontSize: 16),
                     ),
-                    SizedBox(width: 10), // Align the dropdown to the left
+                    const SizedBox(width: 10), // Align the dropdown to the left
                     DropdownButton<String>(
                       focusColor: Colors.white,
                       value: selectedItem,
                       onChanged: (String? newValue) {
                         if (newValue == 'Custom Header') {
                           taskSchedulerHeader = headers;
-                          inspect(taskSchedulerHeader);
                         }
 
                         if (newValue == 'Week View') {
@@ -936,6 +946,45 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       }).toList(),
                     ),
+                    const Text(
+                      'Select Intervals:',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(width: 10),
+                    DropdownButton<String>(
+                      focusColor: Colors.white,
+                      value: timeInterval.toString(),
+                      onChanged: (String? newValue) {
+                        SchedulerTimeSettings schedulerTimeSettings = taskScheduler.timeFormat!;
+                        schedulerTimeSettings.minuteInterval = int.parse(newValue!);
+
+                        TaskScheduler newTaskScheduler = TaskScheduler(
+                          scheduleStartTime: taskScheduler.scheduleStartTime,
+                          scheduleEndTime: taskScheduler.scheduleEndTime,
+                          onEmptySlotPressed: handleEmptySlotTap,
+                          onDragAccept: handleDrop,
+                          entries: taskScheduler.entries,
+                          headers: taskScheduler.headers,
+                          timeFormat: taskScheduler.timeFormat,
+                        );
+                        inspect(taskScheduler);
+                        setState(() {
+                          timeInterval = int.parse(newValue);
+                          //taskScheduler = newTaskScheduler;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Showing $newValue minute intervals')),
+                        );
+                      },
+                      items:
+                          intervals.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    )
                   ]),
             ),
             const SizedBox(height: 20),
