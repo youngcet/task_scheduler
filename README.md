@@ -5,7 +5,7 @@
     <a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/popularity/task_scheduler" alt="Pub popularity"></a>
     <br> 
     <a href="https://github.com/youngcet/task_scheduler"><img src="https://img.shields.io/github/stars/youngcet/task_scheduler?style=social" alt="Repo stars"></a>
-    <a href="https://github.com/youngcet/task_scheduler/commits/main"><img src="https://img.shields.io/github/last-commit/youngcet/task_scheduler/main?logo=git" alt="Last Commit"></a>
+    <a href="https://github.com/youngcet/task_scheduler/commits/master"><img src="https://img.shields.io/github/last-commit/youngcet/task_scheduler/master?logo=git" alt="Last Commit"></a>
     <a href="https://github.com/youngcet/task_scheduler/pulls"><img src="https://img.shields.io/github/issues-pr/youngcet/task_scheduler" alt="Repo PRs"></a>
     <a href="https://github.com/youngcet/task_scheduler/issues?q=is%3Aissue+is%3Aopen"><img src="https://img.shields.io/github/issues/youngcet/task_scheduler" alt="Repo issues"></a>
     <a href="https://github.com/youngcet/task_scheduler/graphs/contributors"><img src="https://badgen.net/github/contributors/youngcet/task_scheduler" alt="Contributors"></a>
