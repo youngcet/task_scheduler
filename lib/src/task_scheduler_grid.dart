@@ -142,8 +142,6 @@ class TaskScheduleView {
         view.taskScheduler.entries?.indexWhere((task) => task.id == id) ?? -1;
 
     if (indexToRemove != -1) {
-      view.taskScheduler.entries?.removeAt(indexToRemove);
-
       bool isSlotAvailable = true;
 
       // check if entries are set to overlap or not
@@ -165,7 +163,7 @@ class TaskScheduleView {
             // String entryType = entry.data?['data'];
             // Colors.transparent means an empty slot
             if (entry.color != Colors.transparent &&
-                entry.resource.index == data['resourceIndex']) {
+                entry.resource.index == data['resourceIndex'] && entry.id != id) {
               DateTime entryStartTime = DateTime(
                   1999, 1, 1, entry.resource.hour, entry.resource.minutes);
               DateTime entryEndTime =
@@ -184,6 +182,8 @@ class TaskScheduleView {
       }
 
       if (isSlotAvailable) {
+        view.taskScheduler.entries?.removeAt(indexToRemove);
+
         view.taskScheduler.entries?.add(ScheduleEntry(
           color: data['bgColor'],
           id: id,

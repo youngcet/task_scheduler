@@ -1,6 +1,6 @@
 name: task_scheduler
 description: The Task Scheduler Widget is a Flutter component designed to display a schedule with customizable time slots and tasks.
-version: 0.0.3+2
+version: 0.0.3+3
 homepage: https://github.com/youngcet/task_scheduler
 
 environment:
