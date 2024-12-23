@@ -9,7 +9,7 @@
     <a href="https://github.com/youngcet/task_scheduler/pulls"><img src="https://img.shields.io/github/issues-pr/youngcet/task_scheduler" alt="Repo PRs"></a>
     <a href="https://github.com/youngcet/task_scheduler/issues?q=is%3Aissue+is%3Aopen"><img src="https://img.shields.io/github/issues/youngcet/task_scheduler" alt="Repo issues"></a>
     <a href="https://github.com/youngcet/task_scheduler/graphs/contributors"><img src="https://badgen.net/github/contributors/youngcet/task_scheduler" alt="Contributors"></a>
-    <a href="https://github.com/youngcet/task_scheduler/blob/main/LICENSE"><img src="https://badgen.net/github/license/youngcet/task_scheduler" alt="License"></a>
+    <a href="https://github.com/youngcet/task_scheduler/blob/master/LICENSE"><img src="https://badgen.net/github/license/youngcet/task_scheduler" alt="License"></a>
     <br>       
     <a href="https://app.codecov.io/gh/youngcet/task_scheduler"><img src="https://img.shields.io/codecov/c/github/youngcet/task_scheduler?logo=codecov&logoColor=white" alt="Coverage Status"></a>
 </p>
@@ -20,9 +20,6 @@ The Task Scheduler Widget is a Flutter component designed to display a schedule 
 [![Pub Version](https://img.shields.io/pub/v/task_scheduler)](https://pub.dev/packages/task_scheduler)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/youngcet/task_scheduler/blob/main/LICENSE)
 
-<p>
-  <a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/popularity/task_scheduler" alt="Pub popularity"></a>
-</p>
 
 ### Demo
 https://youngcet.github.io/taskscheduler.github.io/#/
@@ -695,7 +692,22 @@ View demo in the example tab.
 
 ## Contributing
 
+### Github Repository
 If you have ideas or improvements for this package, we welcome contributions. Please open an issue or create a pull request on our [GitHub repository](https://github.com/youngcet/task_scheduler).
+
+### Join Our Community on Discord! 🎮
+
+Looking for support, updates, or a place to discuss the **Task Scheduler Flutter Widget**? Join our dedicated Discord channel!
+
+👉 [Join the `#task-scheduler-flutter-widget` channel](https://discord.gg/zTSY4n9P)
+
+### What You'll Find:
+- **Help & Support**: Get assistance with integrating and using the package.
+- **Feature Discussions**: Share ideas for new features or improvements.
+- **Bug Reports**: Report issues and collaborate on fixes.
+- **Community Interaction**: Engage with fellow developers working on Flutter projects.
+
+We look forward to seeing you there! 🚀
 
 ## License
 
