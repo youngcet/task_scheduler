@@ -712,3 +712,6 @@ We look forward to seeing you there! 🚀
 ## License
 
 This package is available under the [MIT License](https://github.com/youngcet/task_scheduler/blob/main/LICENSE).
+
+
+Support the plugin <a href="https://www.buymeacoffee.com/yungcet" target="_blank"><img src="https://i.imgur.com/aV6DDA7.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important; box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" > </a>
