@@ -3,15 +3,29 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:task_scheduler/task_scheduler.dart';
 
-// Task Schedule View class
+/// A class that provides functionality for managing and displaying task schedules.
+/// 
+/// This class acts as an interface for interacting with the task scheduler and provides
+/// methods to manage, update, and validate scheduling entries.
 class TaskScheduleView {
-  // Task Scheduler
+  /// Task Scheduler
   final TaskScheduler taskScheduler;
 
-  // Constructor for TaskScheduleView
+  /// Creates a new instance of [TaskScheduleView].
+  /// 
+  /// The [taskScheduler] parameter is required and should be an instance of [TaskScheduler].
   TaskScheduleView({required this.taskScheduler});
 
-  // Method to load the schedule view with given entries
+  /// Loads the schedule view with the given [entries].
+  /// 
+  /// This method clears any existing entries in the task scheduler, initializes
+  /// empty time slots, blocks predefined entries, and then adds the provided [entries]
+  /// to the scheduler.
+  /// 
+  /// Returns the updated [TaskScheduler] instance with the new schedule view.
+  /// 
+  /// Parameters:
+  /// - [entries]: A list of [ScheduleEntry] objects to populate the schedule view.
   TaskScheduler loadScheduleView({required List<ScheduleEntry> entries}) {
     // Clear existing entries
     taskScheduler.entries?.clear();
@@ -115,7 +129,13 @@ class TaskScheduleView {
     }
   }
 
-  // Method to update the schedule view
+  /// Updates the schedule view of the task scheduler by modifying or adding
+  /// schedule entries based on the provided data.
+  ///
+  /// - [view]: The current `TaskScheduleView` instance.
+  /// - [data]: A map containing the details for the schedule entry to be updated.
+  ///
+  /// Returns the updated `TaskScheduler` instance.
   TaskScheduler updateScheduleView(
       TaskScheduleView view, Map<String, dynamic> data) {
     String id = data['fromId'];

@@ -27,6 +27,7 @@ class TaskSchedulerSettings {
 
   // Allowed task schedule intervals
   Map<String, int> allowedIntervals = {
+    '5': 20,
     '10': 42,
     '15': (kIsWeb) ? 55 : 50,
     '20': 90,
