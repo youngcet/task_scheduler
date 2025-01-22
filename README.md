@@ -504,7 +504,7 @@ TaskScheduler(
     scheduleEndTime: ScheduleTimeline(hour: 17),    // always define the end time in a 24 hour format and set the `use24HourFormat=false` to use the 12 hour format
     ...
     timeFormat: SchedulerTimeSettings(
-        minuteInterval: 30,     // set the minute interval, default is 60 (supported intervals [10, 15, 20, 30, 60])
+        minuteInterval: 30,     // set the minute interval, default is 60 (supported intervals [5, 10, 15, 20, 30, 60])
         use24HourFormat: true,  // set wether the timeline should use 12/24 hour format, default is 24 hour format
         includePeriod: true,    // set to include period on 12 hour format
         includeMinutes: false, // set to add or remove minutes from the clock (this only applies to a 12 hour format with the minute intervals set to 60)
