@@ -5,42 +5,51 @@ import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'package:task_scheduler/src/task_scheduler_settings.dart';
 import 'config.dart' as config;
 
+/// This class represents an individual entry in the schedule. 
+/// It can be used to show tasks, events, or appointments in a scheduling system. 
+/// It extends a StatefulWidget, meaning that its state can change over time, 
+/// like when a user interacts with it (e.g., taps, drags, etc.).
 class ScheduleEntry extends StatefulWidget {
-  /// Entry duration
+  /// Entry duration in minutes
   int duration;
 
-  /// Entry resource
+  /// The resource associated with this schedule entry, e.g., a person, machine, etc.
   ResourceScheduleEntry resource;
 
-  /// Entry background color
+  /// The background color of the schedule entry, which will be displayed on the UI
   Color color;
 
-  /// Entry onTap function
+  /// The function that is triggered when the schedule entry is tapped/clicked (optional)
   final Function? onTap;
 
-  /// Entry widget
+  /// The widget displayed inside the schedule entry (optional)
   final Widget? child;
 
-  // Entry id
+  /// Unique identifier for the schedule entry
   final String id;
 
-  // Entry on drag callback
+  /// Callback function triggered when the entry is dragged, providing relevant data
   final Function(Map<String, dynamic>)? onDragCallback;
 
-  // Entry meta data
+  /// Additional metadata that can be attached to the schedule entry (optional)
   final Map<String, dynamic>? data;
 
-  // Task scheduler settings
+  /// The task scheduler's specific settings that apply to this entry (optional)
   final TaskSchedulerSettings? options;
 
-  /// static fields
+  /// Static fields representing default or reserved states of schedule entries
   static const String empty = 'empty';
   static const String blocked = 'blocked';
   static const String booked = 'booked';
+
+  /// Default values for date fields, used when no specific date is provided
   static const int defaultYear = 1991;
   static const int defaultMonth = 1;
   static const int defaultDay = 1;
 
+  /// The constructor for the ScheduleEntry widget, which initializes the properties.
+  /// It requires certain fields like `duration`, `resource`, `id`, and `color`, 
+  /// while other fields like `onTap`, `child`, `data`, `onDragCallback`, and `options` are optional.
   ScheduleEntry(
       {Key? key,
       required this.duration,
@@ -463,7 +472,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                     width: (config.cellWidth!.toDouble() *
                                         entryDuration),
                                     decoration: BoxDecoration(
-                                      border: Border(
+                                      border: const Border(
                                         bottom: BorderSide(
                                           color: Colors.grey,
                                           width: 0.5,
@@ -593,7 +602,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                             width:
                                 (config.cellWidth!.toDouble() * entryDuration),
                             decoration: BoxDecoration(
-                              border: Border(
+                              border: const Border(
                                 bottom: BorderSide(
                                   color: Colors.grey,
                                   width: 0.5,

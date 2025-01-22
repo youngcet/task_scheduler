@@ -190,8 +190,58 @@ class CalendarView {
             borderRadius:
                 BorderRadius.circular(12), // Adjust the border radius as needed
           ),
-          child: Padding(
-            padding: EdgeInsets.all(12),
+          child: _getWidget(now, dateTime, monthAbbreviation, currentDayName)
+        ),
+      ));
+
+      index++;
+    }
+
+    return headers;
+  }
+
+  // This method returns a widget that displays the month abbreviation, day, and day name.
+  // It checks if the provided `dateTime` matches the current day (based on `now.day`).
+  // If it is the current day, the text is styled with white color, otherwise it uses the default style.
+  static Widget _getWidget(DateTime now, DateTime dateTime, String monthAbbreviation, String currentDayName){
+    return (now.day == dateTime.day) 
+      ? Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                monthAbbreviation,
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              SizedBox(
+                width: 50,
+                child: Center(
+                  child: Text(
+                    '${dateTime.day}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w600, fontSize: 20, color: Colors.white),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 3,
+              ),
+              Text(
+                currentDayName,
+                style: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ],
+          ),
+        )
+        : Padding(
+            padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -204,27 +254,16 @@ class CalendarView {
                 const SizedBox(
                   height: 3,
                 ),
-                (now.day == dateTime.day)
-                    ? SizedBox(
-                        width: 50,
-                        child: Center(
-                          child: Text(
-                            '${dateTime.day}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 20),
-                          ),
-                        ),
-                      )
-                    : SizedBox(
-                        width: 50,
-                        child: Center(
-                          child: Text(
-                            '${dateTime.day}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 20),
-                          ),
-                        ),
-                      ),
+                SizedBox(
+                  width: 50,
+                  child: Center(
+                    child: Text(
+                      '${dateTime.day}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 20),
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   height: 3,
                 ),
@@ -235,14 +274,7 @@ class CalendarView {
                 ),
               ],
             ),
-          ),
-        ),
-      ));
-
-      index++;
-    }
-
-    return headers;
+          );
   }
 
   /// Retrieves the dates for the current week.

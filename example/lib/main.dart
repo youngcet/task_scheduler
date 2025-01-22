@@ -60,22 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late TaskScheduleView taskScheduleView;
 
   List<String> resources = ['Cedric', 'Yung', 'Moss', 'Matt'];
-
-  String selectedItem = 'Custom Header';
-  final List<String> items = [
-    'Custom Header',
-    'Week View',
-    'Week View With Month'
-  ];
-
-  final List<String> intervals = [
-    '10',
-    '15',
-    '20',
-    '30',
-    '60'
-  ];
-
   List<ScheduleResourceHeader> taskSchedulerHeader = [];
 
   // declare resource headers
@@ -677,17 +661,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // instatiate the TaskScheduleView and pass TaskScheduler
     taskScheduleView = TaskScheduleView(
         taskScheduler: TaskScheduler(
-      scheduleStartTime: ScheduleTimeline(hour: 8),
-      scheduleEndTime: ScheduleTimeline(hour: 17),
-      onEmptySlotPressed: handleEmptySlotTap,
-      onDragAccept: handleDrop,
-      entries: [],
-      blockedEntries: blockedEntries,
-      headers: headers,
-      timeFormat: SchedulerTimeSettings(
-        minuteInterval: timeInterval,
-        use24HourFormat: true,
-      ),
+          scheduleStartTime: ScheduleTimeline(hour: 8),
+          scheduleEndTime: ScheduleTimeline(hour: 17),
+          onEmptySlotPressed: handleEmptySlotTap,
+          onDragAccept: handleDrop,
+          entries: [],
+          blockedEntries: blockedEntries,
+          headers: CalendarView.weekView(),
+          timeFormat: SchedulerTimeSettings(
+            minuteInterval: timeInterval,
+            use24HourFormat: true,
+          ),
     ));
 
     taskScheduler = taskScheduleView.loadScheduleView(entries: entries);
@@ -696,14 +680,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void handleDrop(Map<String, dynamic> data) {
     TaskScheduleView view = TaskScheduleView(
         taskScheduler: TaskScheduler(
-      scheduleStartTime: taskScheduler.scheduleStartTime,
-      scheduleEndTime: taskScheduler.scheduleEndTime,
-      onEmptySlotPressed: handleEmptySlotTap,
-      onDragAccept: handleDrop,
-      entries: taskScheduler.entries,
-      headers: taskScheduler.headers,
-      timeFormat: taskScheduler.timeFormat,
-    ));
+          scheduleStartTime: taskScheduler.scheduleStartTime,
+          scheduleEndTime: taskScheduler.scheduleEndTime,
+          onEmptySlotPressed: handleEmptySlotTap,
+          onDragAccept: handleDrop,
+          entries: taskScheduler.entries,
+          headers: taskScheduler.headers,
+          timeFormat: taskScheduler.timeFormat,
+        )
+    );
     
     setState(() {
       try {
@@ -888,110 +873,6 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
         ),
-        body: Column(
-          children: <Widget>[
-            Padding(
-              padding:
-                  const EdgeInsets.all(16.0), // Add padding around the dropdown
-              child: Row(
-                  mainAxisSize:
-                      MainAxisSize.min, // Make the row as wide as its content
-                  children: <Widget>[
-                    const Text(
-                      'Select Header:',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(width: 10), // Align the dropdown to the left
-                    DropdownButton<String>(
-                      focusColor: Colors.white,
-                      value: selectedItem,
-                      onChanged: (String? newValue) {
-                        if (newValue == 'Custom Header') {
-                          taskSchedulerHeader = headers;
-                        }
-
-                        if (newValue == 'Week View') {
-                          taskSchedulerHeader = CalendarView.weekView();
-                        }
-
-                        if (newValue == 'Week View With Month') {
-                          taskSchedulerHeader =
-                              CalendarView.weekViewWithMonth();
-                        }
-
-                        TaskScheduler newTaskScheduler = TaskScheduler(
-                          scheduleStartTime: taskScheduler.scheduleStartTime,
-                          scheduleEndTime: taskScheduler.scheduleEndTime,
-                          onEmptySlotPressed: handleEmptySlotTap,
-                          onDragAccept: handleDrop,
-                          entries: taskScheduler.entries,
-                          headers: taskSchedulerHeader,
-                          timeFormat: taskScheduler.timeFormat,
-                        );
-
-                        setState(() {
-                          selectedItem = newValue!;
-                          taskScheduler = newTaskScheduler;
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Showing $selectedItem')),
-                        );
-                      },
-                      items:
-                          items.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                    const Text(
-                      'Select Intervals:',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                    const SizedBox(width: 10),
-                    DropdownButton<String>(
-                      focusColor: Colors.white,
-                      value: timeInterval.toString(),
-                      onChanged: (String? newValue) {
-                        SchedulerTimeSettings schedulerTimeSettings = taskScheduler.timeFormat!;
-                        schedulerTimeSettings.minuteInterval = int.parse(newValue!);
-
-                        TaskScheduler newTaskScheduler = TaskScheduler(
-                          scheduleStartTime: taskScheduler.scheduleStartTime,
-                          scheduleEndTime: taskScheduler.scheduleEndTime,
-                          onEmptySlotPressed: handleEmptySlotTap,
-                          onDragAccept: handleDrop,
-                          entries: taskScheduler.entries,
-                          headers: taskScheduler.headers,
-                          timeFormat: taskScheduler.timeFormat,
-                        );
-                        inspect(taskScheduler);
-                        setState(() {
-                          timeInterval = int.parse(newValue);
-                          //taskScheduler = newTaskScheduler;
-                        });
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Showing $newValue minute intervals')),
-                        );
-                      },
-                      items:
-                          intervals.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    )
-                  ]),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Center(child: taskScheduler),
-            ),
-          ],
-        ));
+        body: Center(child: taskScheduler));
   }
 }

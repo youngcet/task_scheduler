@@ -1,6 +1,6 @@
-## 0.0.3+2
-* Fixed a bug where an entry would disappear when dragged after encountering an overlapping exception.
-* Minor bug fixes
+## 0.0.3+3
+* Support for 5 minutes interval 
+* **Dynamic Cell Widths:** Introduced MediaQuery to dynamically adjust cell widths based on screen size, ensuring the UI is responsive across different devices (mobile, tablet, desktop).
 
 ## 0.0.3+2
 

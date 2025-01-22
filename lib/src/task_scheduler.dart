@@ -12,45 +12,52 @@ import 'package:task_scheduler/src/task_scheduler_settings.dart';
 import 'package:task_scheduler/src/task_scheduler_time.dart';
 import 'package:task_scheduler/src/task_scheduler_time_format.dart';
 
-/// Widget for displaying a task scheduler.
+/// A StatefulWidget that manages the scheduling and execution of tasks.
+///
+/// The `TaskScheduler` widget is responsible for displaying a scheduler with configurable time slots, 
+/// resource headers, and entries. It allows for the configuration of start and end times, time formats, 
+/// and interactions such as drag-and-drop or tapping empty slots.
+///
+/// It also provides options to configure overlapping entries, blocked entries, and display current time 
+/// with or without animation.
 class TaskScheduler extends StatefulWidget {
-  // Start time of the schedule
+  /// Start time of the scheduler
   final ScheduleTimeline scheduleStartTime;
 
-  // End time of the schedule
+  /// End time of the scheduler
   final ScheduleTimeline scheduleEndTime;
 
-  // Headers for resources in the scheduler
+  /// Headers for resources in the scheduler
   final List<ScheduleResourceHeader> headers;
 
-  // List of schedule entries
+  /// List of scheduler entries
   final List<ScheduleEntry>? entries;
 
-  // Time format settings for the scheduler
+  /// Time format settings for the scheduler
   final SchedulerTimeSettings? timeFormat;
 
-  // Options for the scheduler
+  /// Options for the scheduler
   final TaskSchedulerSettings? options;
 
-  // Callback function when an empty slot is pressed
+  /// Callback function when an empty slot is pressed
   final Function(Map<String, dynamic>) onEmptySlotPressed;
 
-  // Callback function when a drag action is accepted
+  /// Callback function when a drag action is accepted
   final Function(Map<String, dynamic>)? onDragAccept;
 
-  // Configure if entries can overlap
+  /// Configure if entries can overlap
   final bool? allowEntryOverlap;
 
-  // block off Resources
+  /// List of blocked off entries
   final List<BlockedEntry>? blockedEntries;
 
-  // animate to current time
+  /// Animate to current time
   final bool? scrollToCurrentTime;
 
-  // show line at current time
+  /// Show line for the current time
   final bool? showCurrentTimeLine;
 
-  // Constructor for TaskScheduler widget
+  /// Constructor to initialize the TaskScheduler widget with necessary configurations.
   const TaskScheduler(
       {Key? key,
       required this.scheduleStartTime,
@@ -70,7 +77,26 @@ class TaskScheduler extends StatefulWidget {
   @override
   _TaskSchedulerState createState() => _TaskSchedulerState();
 
-  // Method to get the timeline for the scheduler
+  /// Generates a list of time slots within the specified schedule range, with optional minute intervals.
+  ///
+  /// This function generates a timeline of time slots based on the provided `scheduleStartTime` and 
+  /// `scheduleEndTime`. The time slots can be created with custom intervals (e.g., 15 minutes, 30 minutes, etc.) 
+  /// if the `timeFormat.minuteInterval` is set. If no interval is provided, the default behavior is to generate 
+  /// hourly time slots.
+  ///
+  /// The function performs the following steps:
+  /// 1. If a valid minute interval is provided (`timeFormat.minuteInterval`), it generates time slots at the 
+  ///    specified intervals between the start and end times. The interval must not exceed 60 minutes.
+  /// 2. If no minute interval is provided, it generates hourly time slots.
+  ///
+  /// The generated time slots are filtered by comparing them against the valid range, using the `_compareDateTime` 
+  /// function to ensure they fall within the schedule's start and end times.
+  ///
+  /// **Throws**:
+  /// - `FlutterError`: If the minute interval is greater than 60.
+  ///
+  /// **Returns**:
+  /// A list of time slots as strings in the format "HH:mm", filtered to only include those within the valid schedule range.
   List<String> getTimeline() {
 
     List<String> timeSlots = [];
@@ -102,7 +128,14 @@ class TaskScheduler extends StatefulWidget {
     return timeSlots;
   }
 
-  // Method to compare time slots with start and end times
+  /// Compares a list of time slots against a start and end time, filtering the slots within the valid range.
+  ///
+  /// This function takes a list of time slots and filters them based on the schedule's start and end times. 
+  /// It compares each time slot to the provided start and end times, ensuring that only the time slots 
+  /// within the specified range are returned.
+  ///
+  /// The start and end times are constructed from the `scheduleStartTime` and `scheduleEndTime` values, 
+  /// and each slot is compared to these times to determine if it falls within the valid range.
   List<String> _compareDateTime(List<String> slots) {
     String startHour = scheduleStartTime.hour.toString();
     String startMinute = '0';
@@ -175,14 +208,14 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
     settings.backgroundColor = widget.options?.backgroundColor;
     settings.cellHeight = _getCellHeight(defaultInterval);
-    settings.cellWidth = _getCellWidth(widget.headers.length);
+    // settings.cellWidth = _getCellWidth(widget.headers.length);
     settings.horizontalTaskPadding = 0;
     settings.borderRadius = const BorderRadius.all(Radius.circular(8.0));
     settings.dividerColor = widget.options?.dividerColor;
 
     config.horizontalTaskPadding = settings.horizontalTaskPadding;
     config.cellHeight = settings.cellHeight;
-    config.cellWidth = settings.cellWidth;
+    // config.cellWidth = settings.cellWidth;
     config.totalHours =
         ((widget.scheduleEndTime.hour - widget.scheduleStartTime.hour))
             .toDouble();
@@ -235,7 +268,16 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     super.dispose();
   }
 
-  // Method to validate schedule start and end times
+  /// Validates the data related to the schedule start and end times, as well as the minute interval.
+  ///
+  /// This function checks several conditions to ensure the schedule's start and end times, 
+  /// as well as the minute interval, meet the required criteria. If any condition is violated, 
+  /// an appropriate error is thrown.
+  ///
+  /// - Ensures the end time is within the valid range of 12 to 23 hours.
+  /// - Ensures the start time is not later than the end time.
+  /// - Ensures the end time is within a valid 24-hour range (not in the early AM hours).
+  /// - Checks if the provided minute interval is within the allowed intervals.
   void _validateData() {
     // if (widget.scheduleStartTime.hour == 0 ||
     //     widget.scheduleEndTime.hour == 0) {
@@ -260,7 +302,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
     if (!settings.allowedIntervals.containsKey('$defaultInterval')) {
       throw FlutterError(
-          "TaskSchedulerError minute intervals [10, 15, 20, 30, 60]");
+          "TaskSchedulerError minute intervals [5, 10, 15, 20, 30, 60]");
     }
   }
 
@@ -339,7 +381,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                   Expanded(
                       child: Stack(
                     children: [
-                      buildScheduleGrid(),
+                      buildScheduleGrid(context),
                     ],
                   )),
                 ],
@@ -351,7 +393,8 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     );
   }
 
-  Widget buildScheduleGrid() {
+  Widget buildScheduleGrid(BuildContext context) {
+    config.cellWidth = _getCellWidth(context, config.totalHeaders);
     // Widget to build the schedule grid with scrollbars
     return Scrollbar(
       controller: config.verticalScrollController,
@@ -477,11 +520,14 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     );
   }
 
-  // Function to calculate the height of timeline divider based on interval
+  /// Function to calculate the height of timeline divider based on interval
   int _getTimelineDividerHeight(int interval) {
     int height = 0;
 
     switch (interval) {
+      case 5: 
+        height = 545;
+        break;
       case 10:
         height = (kIsWeb) ? 270 : 270;
         break;
@@ -502,7 +548,14 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return height;
   }
 
-  // Function to generate 24-hour timeline
+  /// Generates a list of time slots between the schedule's start and end times in 24-hour format.
+  ///
+  /// This function creates a list of time slots based on the schedule's start time, end time, 
+  /// and the minute interval (if specified). It ensures the intervals are valid (<= 60 minutes) 
+  /// and adjusts the time slots according to the specified interval or defaults to hourly intervals.
+  ///
+  /// If the minute interval is provided, it generates time slots with that interval, otherwise,
+  /// it defaults to creating time slots every hour (e.g., "08:00", "09:00").
   List<String> _get24HourTimeline() {
     //DateTime currentDateTime = DateTime.now();
 
@@ -622,7 +675,17 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return timeSlots;
   }
 
-  // Function to add period (AM/PM) to time slots
+  /// Adds a period (AM/PM) suffix to each time slot in the list.
+  ///
+  /// This function iterates through a list of time slots in "HH:MM" format 
+  /// and appends the appropriate "am" or "pm" suffix to each slot based on 
+  /// whether the hour is before or after noon. The resulting list of time slots 
+  /// will include the correct period suffix for each time.
+  ///
+  /// - [slots]: A list of time slots in "HH:MM" format (e.g., "08:00", "13:30") 
+  ///   to which the "am" or "pm" period will be added.
+  ///
+  /// Returns a list of time slots with the period suffix added (e.g., "08:00am", "01:00pm").
   List<String> _addPeriod(List<String> slots) {
     List<String> newSlots = [];
     String suffix = 'am';
@@ -641,7 +704,17 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return newSlots;
   }
 
-  // Function to check and filter start and end times
+  /// Filters a list of time slots to include only those within the schedule's 
+  /// start and end time range.
+  ///
+  /// This function compares each time slot in the provided list with the 
+  /// schedule's start and end times. Only the time slots that fall within 
+  /// the range (inclusive) are included in the returned list.
+  ///
+  /// - [slots]: A list of time slots in "HH:MM" format (e.g., "08:00", "14:30") 
+  ///   to be filtered based on the schedule's start and end times.
+  ///
+  /// Returns a list of time slots that are within the start and end times range.
   List<String> _checkStartEndTimes(List<String> slots) {
     String startHour = widget.scheduleStartTime.hour.toString();
     String startMinute = '0';
@@ -664,7 +737,18 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return filteredTimeSlots;
   }
 
-  // Function to filter time slots between start and end times
+  /// Filters a list of times to include only those within the specified time range.
+  ///
+  /// This function converts the provided `startTime` and `endTime` to the total 
+  /// number of minutes past midnight, then filters the list of times, returning 
+  /// only those that fall within the range between `startTime` and `endTime` 
+  /// (inclusive).
+  ///
+  /// - [times]: A list of time strings in 12-hour format (e.g., "01:00am") to filter.
+  /// - [startTime]: The start time in 12-hour format (e.g., "08:00am").
+  /// - [endTime]: The end time in 12-hour format (e.g., "05:00pm").
+  ///
+  /// Returns a list of times that are within the specified range.
   List<String> filterTimes(
       List<String> times, String startTime, String endTime) {
     int startMinutes = convertToMinutesPastMidnight(startTime);
@@ -676,7 +760,15 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     }).toList();
   }
 
-  // Function to convert time to minutes past midnight
+  /// Converts a 12-hour formatted time string to the total number of minutes 
+  /// past midnight (00:00).
+  /// 
+  /// This function takes a time string in the 12-hour format (e.g., "01:30pm") 
+  /// and converts it to the total number of minutes that have passed since midnight.
+  ///
+  /// - [time]: The time string in 12-hour format (e.g., "08:45am", "01:30pm").
+  ///
+  /// Returns the total number of minutes since midnight.
   int convertToMinutesPastMidnight(String time) {
     List<String> parts = time.replaceAll(RegExp(r'[a-zA-Z]'), '').split(':');
     int hours = int.parse(parts[0]);
@@ -711,7 +803,18 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return filteredTimeSlots;
   }
 
-  // Function to filter time slots between start and end times with AM/PM period
+  /// Filters a list of times to include only those within the specified time range.
+  /// 
+  /// This function converts the provided `startTime` and `endTime` from 12-hour 
+  /// to 24-hour format (if necessary) and then filters the list of times, 
+  /// returning only those that fall within the range between `startTime` and 
+  /// `endTime` (inclusive).
+  ///
+  /// - [times]: A list of time strings in 12-hour format (e.g., "01:00pm") to filter.
+  /// - [startTime]: The start time in 12-hour format (e.g., "08:00am").
+  /// - [endTime]: The end time in 12-hour format (e.g., "05:00pm").
+  ///
+  /// Returns a list of times that are within the specified range.
   List<String> filterTimesWithPeriod(
       List<String> times, String startTime, String endTime) {
     // Convert the end time from 12-hour to 24-hour format
@@ -768,6 +871,9 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     int height = 0;
 
     switch (interval) {
+      case 5:
+        height = 500;
+        break;
       case 10:
         height = 230;
         break;
@@ -789,25 +895,33 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   }
 
   // Function to calculate cell width based on size
-  int _getCellWidth(int size) {
+  int _getCellWidth(BuildContext context, int size) {
+    double screenWidth = MediaQuery.of(context).size.width;
     int width = 0;
 
     switch (size) {
       case 1:
-        width = 320;
+        width = (screenWidth).toInt();
         break;
       case 2:
-        width = 170;
+        width = (screenWidth ~/ 2).toInt();
         break;
       default:
-        width = 150;
+        width = (kIsWeb) ? (screenWidth ~/ size).toInt() : (screenWidth ~/ 3).toInt();
         break;
     }
 
     return width;
   }
 
-  // Function to add empty slots to the schedule grid
+  /// Adds empty schedule slots for each resource and time slot.
+  ///
+  /// This function iterates over the provided time slots and resources, creating 
+  /// empty schedule entries for each time slot that occurs before the schedule 
+  /// end time. These empty slots are added as transparent entries in the schedule.
+  ///
+  /// - [minutesIntervals]: The duration (in minutes) for each empty slot.
+  /// - [timeSlots]: A list of time slots in "HH:mm" format to generate empty slots for.
   void addEmptySlots(int minutesIntervals, List<String> timeSlots) {
     for (ScheduleResourceHeader res in widget.headers) {
       for (int i = 0; i < timeSlots.length; i++) {
@@ -873,7 +987,16 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     }
   }
 
-  // Function to add a new entry
+  /// Adds a new schedule entry if it doesn't already exist.
+  ///
+  /// This function checks if the task with the same time and ID already exists in
+  /// the `tasks` list. If it exists, the entry is not added, and the function
+  /// returns `false`. Otherwise, the new task is added to the list, and the 
+  /// function returns `true`.
+  ///
+  /// - [toAdd]: The new [ScheduleEntry] to add to the list.
+  ///
+  /// Returns a boolean indicating whether the entry was successfully added.
   bool addNewEntry(ScheduleEntry toAdd) {
     bool taskExists = false;
 
@@ -894,7 +1017,11 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     }
   }
 
-  // Widget timesline
+  /// Adds a time slot widget with the formatted time.
+  ///
+  /// This function takes a time string, formats it based on the user's time 
+  /// settings (12-hour or 24-hour format), and returns a widget displaying 
+  /// the formatted time in a specific layout.
   Widget addTimeSlot(String time) {
     double remainder = 60 / defaultInterval;
     bool showHoursOnly = widget.timeFormat?.showHoursOnly ?? false;

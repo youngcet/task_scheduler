@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 import 'config.dart' as config;
 
-// ScheduleResourceHeader class for header widget in the schedule
+/// A widget representing a resource header in a task scheduler.
+///
+/// This widget is typically used to display headers for resources in a schedule
+/// view, such as days, rooms, or any other categorized resources.
 class ScheduleResourceHeader extends StatelessWidget {
-  // resource title
+ /// The title of the resource (optional).
   final String? title;
 
-  // Child widget for the header
+  /// The child widget to be displayed within the header.
   final Widget child;
 
-  // id for the header
+  /// A unique identifier for the header.
   final String id;
 
-  // position for the header
+  /// The position of the header in the schedule (e.g., column index).
   final int position;
 
-  // height for the header
+  /// The height of the header (optional). Defaults to 70 if not provided.
   final double? height;
 
-  // Constructor for ScheduleResourceHeader
+  /// Creates an instance of [ScheduleResourceHeader].
+  ///
+  /// - [child]: The widget to be displayed within the header (required).
+  /// - [id]: A unique identifier for the header (required).
+  /// - [position]: The position of the header in the schedule (required).
+  /// - [title]: An optional title for the header.
+  /// - [height]: An optional height for the header. Defaults to 70 if not provided.
   const ScheduleResourceHeader(
       {Key? key,
       required this.child,
