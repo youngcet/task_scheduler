@@ -1,9 +1,4 @@
 <p align="center">   
-    <a href="https://pub.dev/packages/task_scheduler"><img src="https://img.shields.io/pub/v/task_scheduler?logo=dart&logoColor=white" alt="Pub Version"></a>
-    <a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/points/task_scheduler" alt="Pub points"></a>
-    <a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/likes/task_scheduler" alt="Pub Likes"></a>
-    <a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/popularity/task_scheduler" alt="Pub popularity"></a>
-    <br> 
     <a href="https://github.com/youngcet/task_scheduler"><img src="https://img.shields.io/github/stars/youngcet/task_scheduler?style=social" alt="Repo stars"></a>
     <a href="https://github.com/youngcet/task_scheduler/commits/master"><img src="https://img.shields.io/github/last-commit/youngcet/task_scheduler/master?logo=git" alt="Last Commit"></a>
     <a href="https://github.com/youngcet/task_scheduler/pulls"><img src="https://img.shields.io/github/issues-pr/youngcet/task_scheduler" alt="Repo PRs"></a>
@@ -19,7 +14,13 @@ The Task Scheduler Widget is a Flutter component designed to display a schedule 
 
 [![Pub Version](https://img.shields.io/pub/v/task_scheduler)](https://pub.dev/packages/task_scheduler)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/youngcet/task_scheduler/blob/main/LICENSE)
+<a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/points/task_scheduler" alt="Pub points"></a>
+<a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/likes/task_scheduler" alt="Pub Likes"></a>
+<a href="https://pub.dev/packages/task_scheduler"><img src="https://badgen.net/pub/popularity/task_scheduler" alt="Pub popularity"></a>
 
+<p align="center">
+  <img src="https://github.com/youngcet/task_scheduler/blob/master/doc/demo.gif?raw=true" style="width:100%">
+</p>
 
 ### Demo
 https://youngcet.github.io/taskscheduler.github.io/#/
