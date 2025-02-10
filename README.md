@@ -649,7 +649,7 @@ void onResizeUpdate(ScheduleEntry entry){
 ![Resize](https://permanentlink.co.za/img/task_scheduler_resize_2.gif)
 
 ## Calendar Views
-**Calendar view** provides a week schedule view. There are two types to choose from, `CalendarView.weekView()` and `CalendarView.weekViewWithMonth()`.
+**Calendar view** provides a week/month schedule view. There are two types to choose from, `CalendarView.weekView()` and `CalendarView.weekViewWithMonth()`.
 
 ### CalendarView.weekView()
 <img src="https://permanentlink.co.za/img/calendarview.png" alt="Calendar view" style="width: 40%;">
@@ -676,6 +676,7 @@ CalendarView.weekView({
   String? firstDayOfWeek, // first day of the week (CalendarView.monday or CalendarView.sunday)
   bool? upperCaseWeekDayName, // upper case the week day name,
   bool? showOnlyWeekDay,  // shows only the week day name without the date
+  bool? showFullMonth, // shows the full month instead of a week
 })
 ```
 
@@ -683,13 +684,21 @@ CalendarView.weekView({
 ```dart
 CalendarView.weekViewWithMonth({
   String? firstDayOfWeek, // first day of the week (CalendarView.monday or CalendarView.sunday)
+  bool? showFullMonth, // shows the full month instead of a week
 })
 ```
 
 The default `firstDayOfWeek` is Sunday.
 
-## Demo
-View demo in the example tab.
+### Span Entry Over Multiple Days
+Add `spanOverDays` property to ScheduleEntry.
+  ```dart
+    ScheduleEntry(
+        ...
+        spanOverDays: 2, // the entry will span over 2 days
+    )
+  ```
+If set to a value greater than 1 and Calendar view is not applied, this value is ignored.
 
 ## Contributing
 

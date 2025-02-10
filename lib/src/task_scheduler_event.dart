@@ -1,13 +1,14 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:task_scheduler/src/task_scheduler.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'package:task_scheduler/src/task_scheduler_settings.dart';
 import 'config.dart' as config;
 
-/// This class represents an individual entry in the schedule. 
-/// It can be used to show tasks, events, or appointments in a scheduling system. 
-/// It extends a StatefulWidget, meaning that its state can change over time, 
+/// This class represents an individual entry in the schedule.
+/// It can be used to show tasks, events, or appointments in a scheduling system.
+/// It extends a StatefulWidget, meaning that its state can change over time,
 /// like when a user interacts with it (e.g., taps, drags, etc.).
 class ScheduleEntry extends StatefulWidget {
   /// Entry duration in minutes
@@ -37,6 +38,12 @@ class ScheduleEntry extends StatefulWidget {
   /// The task scheduler's specific settings that apply to this entry (optional)
   final TaskSchedulerSettings? options;
 
+  /// Extend the task over multiple days. This applies only to the Calendar Views.
+  int? spanOverDays;
+
+  /// The entry type. This may be used to identify the type of entry, e.g. empty, blocked & booked
+  final String? type;
+
   /// Static fields representing default or reserved states of schedule entries
   static const String empty = 'empty';
   static const String blocked = 'blocked';
@@ -47,8 +54,11 @@ class ScheduleEntry extends StatefulWidget {
   static const int defaultMonth = 1;
   static const int defaultDay = 1;
 
+  /// Default span days
+  static const int defaultSpanDays = 1;
+
   /// The constructor for the ScheduleEntry widget, which initializes the properties.
-  /// It requires certain fields like `duration`, `resource`, `id`, and `color`, 
+  /// It requires certain fields like `duration`, `resource`, `id`, and `color`,
   /// while other fields like `onTap`, `child`, `data`, `onDragCallback`, and `options` are optional.
   ScheduleEntry(
       {Key? key,
@@ -60,6 +70,8 @@ class ScheduleEntry extends StatefulWidget {
       this.child,
       this.data,
       this.onDragCallback,
+      this.spanOverDays,
+      this.type,
       this.options})
       : super(key: key);
 
@@ -119,6 +131,10 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
     // Check if drag is enabled
     bool isDragAndDrop = widget.options?.isTaskDraggable ?? false;
     blockOriginalColor = widget.color;
+
+    // span over days if not null, else default to 1 (no span)
+    widget.spanOverDays ??= entryDuration;
+    entryDuration = widget.spanOverDays!;
 
     if (widget.data != null) {
       if (widget.data?['type'] == ScheduleEntry.blocked) {
@@ -248,6 +264,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                         'resourceMinute':
                                             widget.resource.minutes,
                                         'duration': widget.duration,
+                                        'spanOverDays': entryDuration,
                                         'fromId': widget.id,
                                         'resourceIndex': widget.resource.index,
                                         'bgColor': widget.color,
@@ -493,7 +510,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                           );
                         },
                         onAccept: (List<Map<String, dynamic>> data) {
-                          final String id = widget.id;
+                          final String id = data[0]['fromId'];
                           final int resourceIndex = widget.resource.index;
                           final int startHour = widget.resource.hour;
                           final int minutes = widget.resource.minutes;
@@ -511,6 +528,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                 'fromHour': data[0]['resourceHour'],
                                 'fromMinute': data[0]['resourceMinute'],
                                 'fromDuration': data[0]['duration'],
+                                'spanOverDays': data[0]['spanOverDays'],
                                 'fromResourceIndex': data[0]['resourceIndex'],
                                 'child': data[0]['child'],
                                 'bgColor': data[0]['bgColor'],
