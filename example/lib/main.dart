@@ -348,6 +348,7 @@ class _MyHomePageState extends State<MyHomePage> {
             minutes: 60,
           ),
           duration: 60,
+          spanOverDays: 2,
           options: TaskSchedulerSettings(
             isTaskDraggable: true, // false to disable drag
           ),
@@ -661,17 +662,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // instatiate the TaskScheduleView and pass TaskScheduler
     taskScheduleView = TaskScheduleView(
         taskScheduler: TaskScheduler(
-          scheduleStartTime: ScheduleTimeline(hour: 8),
-          scheduleEndTime: ScheduleTimeline(hour: 17),
-          onEmptySlotPressed: handleEmptySlotTap,
-          onDragAccept: handleDrop,
-          entries: [],
-          blockedEntries: blockedEntries,
-          headers: CalendarView.weekView(),
-          timeFormat: SchedulerTimeSettings(
-            minuteInterval: timeInterval,
-            use24HourFormat: true,
-          ),
+      scheduleStartTime: ScheduleTimeline(hour: 8),
+      scheduleEndTime: ScheduleTimeline(hour: 17),
+      onEmptySlotPressed: handleEmptySlotTap,
+      onDragAccept: handleDrop,
+      entries: [],
+      blockedEntries: blockedEntries,
+      headers: headers,
+      timeFormat: SchedulerTimeSettings(
+        minuteInterval: timeInterval,
+        use24HourFormat: true,
+      ),
     ));
 
     taskScheduler = taskScheduleView.loadScheduleView(entries: entries);
@@ -680,16 +681,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void handleDrop(Map<String, dynamic> data) {
     TaskScheduleView view = TaskScheduleView(
         taskScheduler: TaskScheduler(
-          scheduleStartTime: taskScheduler.scheduleStartTime,
-          scheduleEndTime: taskScheduler.scheduleEndTime,
-          onEmptySlotPressed: handleEmptySlotTap,
-          onDragAccept: handleDrop,
-          entries: taskScheduler.entries,
-          headers: taskScheduler.headers,
-          timeFormat: taskScheduler.timeFormat,
-        )
-    );
-    
+      scheduleStartTime: taskScheduler.scheduleStartTime,
+      scheduleEndTime: taskScheduler.scheduleEndTime,
+      onEmptySlotPressed: handleEmptySlotTap,
+      onDragAccept: handleDrop,
+      entries: taskScheduler.entries,
+      headers: taskScheduler.headers,
+      timeFormat: taskScheduler.timeFormat,
+    ));
+
     setState(() {
       try {
         taskScheduler = view.updateScheduleView(view, data);

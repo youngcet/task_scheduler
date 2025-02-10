@@ -1,5 +1,5 @@
 /// This class represents a resource's specific schedule entry details.
-/// It stores information about when a particular resource is scheduled, 
+/// It stores information about when a particular resource is scheduled,
 /// such as the hour, minutes, and an index which might correspond to its position or order in a schedule.
 class ResourceScheduleEntry {
   /// The index of the resource entry.

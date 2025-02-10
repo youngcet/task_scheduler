@@ -7,19 +7,19 @@ class SchedulerTimeSettings {
   bool? includePeriod;
 
   /// The interval for minutes, e.g., 5-minute or 15-minute increments.
-  /// 
+  ///
   /// Allowed intervals [5, 10, 15, 20, 30, 60].
   int? minuteInterval;
 
   /// Indicates whether to include minutes in the time display.
   bool? includeMinutes;
 
-   /// If true, only hours will be shown on the clock, excluding minutes.
+  /// If true, only hours will be shown on the clock, excluding minutes.
   bool? showHoursOnly;
 
   /// Constructor for creating an instance of [SchedulerTimeSettings].
-  /// 
-  /// Allows customization of various time settings such as hour format, 
+  ///
+  /// Allows customization of various time settings such as hour format,
   /// minute interval, and visibility of minutes or hours.
   SchedulerTimeSettings(
       {this.minuteInterval,

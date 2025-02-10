@@ -29,8 +29,7 @@ void main() {
             children: const <Widget>[
               Text(
                 'Yung',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               SizedBox(
                 height: 3,
@@ -47,8 +46,7 @@ void main() {
             children: const <Widget>[
               Text(
                 'Cedric',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               SizedBox(
                 height: 3,
@@ -65,8 +63,7 @@ void main() {
             children: const <Widget>[
               Text(
                 'Moss',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               SizedBox(
                 height: 3,
@@ -83,8 +80,7 @@ void main() {
             children: const <Widget>[
               Text(
                 'Matt',
-                style:
-                    TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
               ),
               SizedBox(
                 height: 3,

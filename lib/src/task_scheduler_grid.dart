@@ -1,10 +1,11 @@
+import 'dart:developer';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:task_scheduler/task_scheduler.dart';
 
 /// A class that provides functionality for managing and displaying task schedules.
-/// 
+///
 /// This class acts as an interface for interacting with the task scheduler and provides
 /// methods to manage, update, and validate scheduling entries.
 class TaskScheduleView {
@@ -12,27 +13,43 @@ class TaskScheduleView {
   final TaskScheduler taskScheduler;
 
   /// Creates a new instance of [TaskScheduleView].
-  /// 
+  ///
   /// The [taskScheduler] parameter is required and should be an instance of [TaskScheduler].
   TaskScheduleView({required this.taskScheduler});
 
   /// Loads the schedule view with the given [entries].
-  /// 
+  ///
   /// This method clears any existing entries in the task scheduler, initializes
   /// empty time slots, blocks predefined entries, and then adds the provided [entries]
   /// to the scheduler.
-  /// 
+  ///
   /// Returns the updated [TaskScheduler] instance with the new schedule view.
-  /// 
+  ///
   /// Parameters:
   /// - [entries]: A list of [ScheduleEntry] objects to populate the schedule view.
   TaskScheduler loadScheduleView({required List<ScheduleEntry> entries}) {
+    bool isCalendarView = false;
     // Clear existing entries
     taskScheduler.entries?.clear();
 
     List<String> timeSlots = taskScheduler.getTimeline();
     _addEmptySlots(timeSlots);
     _blockEntries();
+
+    for (var header in taskScheduler.headers) {
+      if (header.typeOf != null && header.typeOf == CalendarView) {
+        isCalendarView = true;
+        break;
+      }
+    }
+
+    var index = 0;
+    for (var entry in entries) {
+      if ((entry.spanOverDays != null && entry.spanOverDays! > 1) &&
+          !isCalendarView) {
+        entries[index].spanOverDays = ScheduleEntry.defaultSpanDays;
+      }
+    }
 
     taskScheduler.entries?.addAll(entries);
 
@@ -183,7 +200,8 @@ class TaskScheduleView {
             // String entryType = entry.data?['data'];
             // Colors.transparent means an empty slot
             if (entry.color != Colors.transparent &&
-                entry.resource.index == data['resourceIndex'] && entry.id != id) {
+                entry.resource.index == data['resourceIndex'] &&
+                entry.id != id) {
               DateTime entryStartTime = DateTime(
                   1999, 1, 1, entry.resource.hour, entry.resource.minutes);
               DateTime entryEndTime =
@@ -199,6 +217,23 @@ class TaskScheduleView {
             }
           });
         }
+
+        if (isSlotAvailable && data['spanOverDays'] > 1) {
+          int startPos = data['resourceIndex'] + 1;
+          for (var i = startPos; i < data['spanOverDays']; i++) {
+            bool slotAvailable = isResourceSlotAvailable(ScheduleEntry(
+                duration: duration,
+                resource: ResourceScheduleEntry(
+                    index: i, hour: bookedhour, minutes: bookedminutes),
+                id: id,
+                color: Colors.transparent));
+
+            if (!slotAvailable) {
+              isSlotAvailable = false;
+              break;
+            }
+          }
+        }
       }
 
       if (isSlotAvailable) {
@@ -212,6 +247,7 @@ class TaskScheduleView {
               hour: bookedhour,
               minutes: bookedminutes),
           duration: data['duration'],
+          spanOverDays: data['spanOverDays'],
           options: TaskSchedulerSettings(
               isTaskDraggable: true, taskResizeMode: data['taskResizeMode']),
           onTap: data['onTap'],
@@ -221,11 +257,47 @@ class TaskScheduleView {
       } else {
         // throw an exception since overlap is the only reason a slot is not available
         throw Exception(
-            'Overlapping Entry Periods Detected at $bookedhour:$bookedminutes');
+            'Overlapping Entry Periods Detected at ${_getDoubleDigit(bookedhour)}:${_getDoubleDigit(bookedminutes)}');
       }
     }
 
     return view.taskScheduler;
+  }
+
+  /// Returns a string representation of an integer value, ensuring it is
+  /// always two digits by prepending a '0' if the value is less than 10.
+  String _getDoubleDigit(int val) {
+    return (val < 10) ? '0$val' : '$val';
+  }
+
+  /// Retrieves a list of `ScheduleEntry` objects associated with a given `resourceId`.
+  List<ScheduleEntry> getResourceEntries(int resourceId) {
+    List<ScheduleEntry> filteredEntries = taskScheduler.entries!
+        .where((entry) =>
+            entry.resource.index == resourceId &&
+            entry.type != ScheduleEntry.empty)
+        .toList();
+
+    return filteredEntries;
+  }
+
+  /// Converts a `Map<String, dynamic>` into a `ScheduleEntry` object.
+  ScheduleEntry castToScheduleEntry(Map<String, dynamic> data) {
+    return ScheduleEntry(
+      duration: data['duration'],
+      resource: ResourceScheduleEntry(
+          index: data['resourceIndex'],
+          hour: data['hour'],
+          minutes: data['minutes']),
+      id: data['id'],
+      color: data['bgColor'],
+      spanOverDays: data['spanOverDays'] ?? ScheduleEntry.defaultSpanDays,
+      onTap: data['onTap'],
+      data: data['data'],
+      options: TaskSchedulerSettings(
+          isTaskDraggable: true, taskResizeMode: data['taskResizeMode']),
+      child: data['child'],
+    );
   }
 
   // Method to check if a new entry can be added
@@ -285,6 +357,7 @@ class TaskScheduleView {
           _addNewEntry(ScheduleEntry(
             color: Colors.transparent,
             id: res.id,
+            type: ScheduleEntry.empty,
             resource: ResourceScheduleEntry(
                 index: res
                     .position, // uses resource index to assign an entry, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -338,6 +411,7 @@ class TaskScheduleView {
           _addNewEntry(ScheduleEntry(
             color: Colors.grey.shade300,
             id: generateId(5),
+            type: ScheduleEntry.blocked,
             resource: ResourceScheduleEntry(
                 index: entry.resource.index,
                 hour: endTime.hour,
