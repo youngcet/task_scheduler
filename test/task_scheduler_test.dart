@@ -168,13 +168,13 @@ class _MyHomePageState extends State<MyHomePage> {
   late TaskScheduleView taskScheduleView;
 
   List<ScheduleResourceHeader> headers = [
-    ScheduleResourceHeader(
+    const ScheduleResourceHeader(
       id: '1',
       position: 0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
+        children: <Widget>[
           Text(
             'title 1',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -185,13 +185,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     ),
-    ScheduleResourceHeader(
+    const ScheduleResourceHeader(
       id: '2',
       position: 1,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
+        children: <Widget>[
           Text(
             'title 2',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -202,13 +202,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     ),
-    ScheduleResourceHeader(
+    const ScheduleResourceHeader(
       id: '3',
       position: 2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
+        children: <Widget>[
           Text(
             'title 3',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -219,13 +219,13 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
     ),
-    ScheduleResourceHeader(
+    const ScheduleResourceHeader(
       id: '4',
       position: 3,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const <Widget>[
+        children: <Widget>[
           Text(
             'title 4',
             style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
@@ -250,6 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onDragAccept: handleDrop,
       entries: [],
       headers: headers,
+      scrollToCurrentTime: false,
       timeFormat: SchedulerTimeSettings(minuteInterval: timeInterval),
     ));
 
@@ -268,9 +269,9 @@ class _MyHomePageState extends State<MyHomePage> {
           isTaskDraggable: true, // false to disable drag
         ),
         onTap: () {
-          print('new entry clicked');
+          //print('new entry clicked');
         },
-        child: Text('Booked'),
+        child: const Text('Booked'),
       ),
       ScheduleEntry(
         color: Colors.green,
@@ -286,9 +287,9 @@ class _MyHomePageState extends State<MyHomePage> {
           isTaskDraggable: true, // false to disable drag
         ),
         onTap: () {
-          print('new entry clicked');
+          //print('new entry clicked');
         },
-        child: Text('Booked'),
+        child: const Text('Booked'),
       )
     ];
 
@@ -314,7 +315,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void handleEmptySlotTap(Map<String, dynamic> data) {
     // Handle the returned data here
-    print('Received data from onTap: $data');
+    // print('Received data from onTap: $data');
   }
 
   @override

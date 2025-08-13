@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:task_scheduler/src/blocked_entry.dart';
 import 'package:task_scheduler/src/calendar_view.dart';
+import 'package:task_scheduler/src/constants.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'config.dart' as config;
 import 'package:task_scheduler/src/task_scheduler_event.dart';
@@ -23,41 +23,65 @@ import 'package:task_scheduler/src/task_scheduler_time_format.dart';
 /// It also provides options to configure overlapping entries, blocked entries, and display current time
 /// with or without animation.
 class TaskScheduler extends StatefulWidget {
-  /// Start time of the scheduler
+  /// Start time of the scheduler.
+  /// Defines the earliest time shown in the schedule view.
+  /// For example, if set to 08:00, no times earlier than 08:00 will be displayed.
   final ScheduleTimeline scheduleStartTime;
 
-  /// End time of the scheduler
+  /// End time of the scheduler.
+  /// Defines the latest time shown in the schedule view.
+  /// For example, if set to 18:00, no times later than 18:00 will be displayed.
   final ScheduleTimeline scheduleEndTime;
 
-  /// Headers for resources in the scheduler
+  /// Headers for resources in the scheduler.
+  /// Each header represents a resource such as a room, person, or asset.
+  /// This determines the vertical or horizontal grouping in the scheduler.
   final List<ScheduleResourceHeader> headers;
 
-  /// List of scheduler entries
+  /// List of scheduler entries.
+  /// These represent the events, appointments, or tasks displayed in the timeline.
+  /// Can be null if the scheduler should start empty.
   final List<ScheduleEntry>? entries;
 
-  /// Time format settings for the scheduler
+  /// Time format settings for the scheduler.
+  /// Controls how times are displayed (e.g., 12-hour vs 24-hour format, step intervals).
   final SchedulerTimeSettings? timeFormat;
 
-  /// Options for the scheduler
+  /// Options for the scheduler.
+  /// Provides additional customization such as colors, styles, and behavior flags.
   final TaskSchedulerSettings? options;
 
-  /// Callback function when an empty slot is pressed
+  /// Callback function triggered when an empty slot is pressed.
+  /// The callback contains contextual data
+  /// such as the time and resource that was clicked.
   final Function(Map<String, dynamic>) onEmptySlotPressed;
 
-  /// Callback function when a drag action is accepted
+  /// Callback function triggered when a drag action is accepted.
+  /// For example, when a dragged event is dropped into a slot with drag-related details.
   final Function(Map<String, dynamic>)? onDragAccept;
 
-  /// Configure if entries can overlap
+  /// Whether entries in the scheduler can overlap.
+  /// If `true`, multiple events can be scheduled for the same time and resource.
+  /// If `false`, overlapping events will be restricted.
   final bool? allowEntryOverlap;
 
-  /// List of blocked off entries
+  /// List of blocked-off entries.
+  /// Represents time ranges that cannot be scheduled for certain resources.
+  /// Useful for maintenance, breaks, or unavailable times.
   final List<BlockedEntry>? blockedEntries;
 
-  /// Animate to current time
+  /// Whether the view should automatically scroll to the current time when loaded.
+  /// Useful for quickly focusing on the current part of the day.
   final bool? scrollToCurrentTime;
 
-  /// Show line for the current time
+  /// Whether to display a visual line indicating the current time.
+  /// The line updates in real-time and helps users orient themselves in the schedule.
   final bool? showCurrentTimeLine;
+
+  /// Whether to show or hide the time tooltip on web platforms.
+  /// The tooltip typically appears when dragging over the timeline and displays
+  /// the exact time of the slot that is being dragged over.
+  final bool? showTimeTooltipOnWeb;
 
   /// Constructor to initialize the TaskScheduler widget with necessary configurations.
   const TaskScheduler(
@@ -73,6 +97,7 @@ class TaskScheduler extends StatefulWidget {
       this.blockedEntries,
       this.scrollToCurrentTime,
       this.showCurrentTimeLine,
+      this.showTimeTooltipOnWeb,
       this.onDragAccept})
       : super(key: key);
 
@@ -373,7 +398,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                                 config.cellHeight!,
                             width: 1,
                             color: settings.dividerColor ??
-                                Theme.of(context).primaryColor,
+                                Constants.borderLineColor,
                           ),
                         ],
                       ),
@@ -394,6 +419,14 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     );
   }
 
+  /// Builds the schedule grid widget with vertical and horizontal scrolling.
+  ///
+  /// The grid shows time intervals as rows and resources or headers as columns,
+  /// with dividers forming the grid lines and overlays for tasks and the current time line.
+  ///
+  /// - [context]: Build context for layout calculations and theming.
+  ///
+  /// Returns a widget containing scrollable grid with schedule tasks and time indicators.
   Widget buildScheduleGrid(BuildContext context) {
     config.cellWidth = _getCellWidth(context, config.totalHeaders);
 
@@ -522,7 +555,19 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     );
   }
 
-  /// Function to calculate the height of timeline divider based on interval
+  /// Returns the height (in logical pixels) for a timeline divider
+  /// based on the given [interval] in minutes.
+  ///
+  /// The [interval] parameter determines how tall the divider should be.
+  /// Specific heights are assigned for certain intervals, with a default
+  /// height used when no case matches.
+  ///
+  /// Height values may differ for web and non-web platforms (although
+  /// currently, they are the same in all cases).
+  ///
+  /// [interval] - The time interval in minutes (e.g., 5, 10, 20, etc.).
+  ///
+  /// Returns the height as an `int` representing logical pixels.
   int _getTimelineDividerHeight(int interval) {
     int height = 0;
 
@@ -595,7 +640,13 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return timeSlots;
   }
 
-  // Function to generate 12-hour timeline
+  /// Generates a list of time slots formatted in 12-hour format.
+  ///
+  /// The time slots are created between [widget.scheduleStartTime] and
+  /// [widget.scheduleEndTime] with intervals defined by [widget.timeFormat.minuteInterval].
+  /// Optionally includes AM/PM periods based on the time format settings.
+  ///
+  /// Returns a list of formatted time strings like "09:00am", "01:30pm", or "13:00" depending on configuration.
   List<String> _get12HourTimeline() {
     List<String> timeSlots = [];
     List<String> slots = [];
@@ -996,7 +1047,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                 },
               });
             },
-            child: Text(''),
+            child: const Text(''),
           ));
         }
       }

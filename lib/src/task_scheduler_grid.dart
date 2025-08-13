@@ -136,6 +136,15 @@ class TaskScheduleView {
     }
   }
 
+  /// Updates the duration of a schedule entry at a given index.
+  ///
+  /// The new duration is calculated by doubling the current duration
+  /// and subtracting the [differenceInMinutes]. The duration is then
+  /// updated to the maximum between the current duration and the calculated value
+  /// to avoid reducing the duration below the current.
+  ///
+  /// - [entryIndex]: The index of the entry to update.
+  /// - [differenceInMinutes]: The amount of minutes to adjust the duration by.
   void _updateDuration(int entryIndex, int differenceInMinutes) {
     if (taskScheduler.entries != null &&
         taskScheduler.entries!.length > entryIndex) {
@@ -174,7 +183,6 @@ class TaskScheduleView {
       min = '0$min';
     }
 
-    String starthour = '$hour:$min';
     int indexToRemove =
         view.taskScheduler.entries?.indexWhere((task) => task.id == id) ?? -1;
 
@@ -270,7 +278,12 @@ class TaskScheduleView {
     return (val < 10) ? '0$val' : '$val';
   }
 
-  /// Retrieves a list of `ScheduleEntry` objects associated with a given `resourceId`.
+  /// Retrieves all non-empty schedule entries for a given resource.
+  ///
+  /// Filters the list of schedule entries to return only those that
+  /// belong to the resource with the specified [resourceId] and are not empty.
+  ///
+  /// Returns a list of matching [ScheduleEntry] objects.
   List<ScheduleEntry> getResourceEntries(int resourceId) {
     List<ScheduleEntry> filteredEntries = taskScheduler.entries!
         .where((entry) =>
@@ -281,7 +294,10 @@ class TaskScheduleView {
     return filteredEntries;
   }
 
-  /// Converts a `Map<String, dynamic>` into a `ScheduleEntry` object.
+  /// Converts a [Map<String, dynamic>] into a [ScheduleEntry] object.
+  ///
+  /// The map should contain all the necessary fields to create
+  /// a [ScheduleEntry], including nested [ResourceScheduleEntry] data.
   ScheduleEntry castToScheduleEntry(Map<String, dynamic> data) {
     return ScheduleEntry(
       duration: data['duration'],
@@ -300,7 +316,10 @@ class TaskScheduleView {
     );
   }
 
-  // Method to check if a new entry can be added
+  /// Attempts to add a new [ScheduleEntry] to the task scheduler.
+  ///
+  /// Returns `true` if the entry was added successfully,
+  /// or `false` if an entry with the same resource time and ID already exists.
   bool _addNewEntry(ScheduleEntry toAdd) {
     bool taskExists = false;
 
@@ -321,7 +340,11 @@ class TaskScheduleView {
     }
   }
 
-  // Method to add empty slots
+  /// Adds empty schedule slots for each resource in the task scheduler.
+  ///
+  /// This method iterates through all provided [timeSlots] and creates an
+  /// empty schedule entry for each resource, ensuring that the entry is
+  /// within the scheduler's end time.
   void _addEmptySlots(List<String> timeSlots) {
     for (ScheduleResourceHeader res in taskScheduler.headers) {
       for (int i = 0; i < timeSlots.length; i++) {
@@ -370,7 +393,11 @@ class TaskScheduleView {
                 taskScheduler.onDragAccept!(data);
               }
             },
-            data: const {'type': ScheduleEntry.empty},
+            data: {
+              'type': ScheduleEntry.empty,
+              'ts_showTimeTooltipOnWeb':
+                  taskScheduler.showTimeTooltipOnWeb ?? false
+            },
             onTap: () {
               taskScheduler.onEmptySlotPressed({
                 'resource_id': res.id,
@@ -382,7 +409,7 @@ class TaskScheduleView {
                 },
               });
             },
-            child: Text(''),
+            child: const Text(''),
           ));
         }
       }
@@ -479,5 +506,21 @@ class TaskScheduleView {
     }
 
     return isSlotAvailable;
+  }
+
+  /// Retrieves all schedule entries that belong to the given [category].
+  ///
+  /// Iterates through the `taskScheduler.entries` list and filters out
+  /// any entries whose `category` property matches the provided [category] value.
+  ///
+  /// If an entry's `category` is `null`, it will be ignored.
+  ///
+  /// - Parameter [category]: The category name to match against each entry's `category`.
+  /// - Returns: A `List<ScheduleEntry>` containing all matching entries.
+  List<ScheduleEntry> getEntriesByCategory(String category) {
+    return taskScheduler.entries
+            ?.where((entry) => entry.category == category)
+            .toList() ??
+        [];
   }
 }
