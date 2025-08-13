@@ -332,9 +332,9 @@ class CalendarView {
           : DateTime(today.year + 1, 1, 0);
 
       // Find the first day of the current week (Sunday)
-      DateTime firstDayOfWeek = (weekStartDay == CalendarView.monday)
-          ? today.subtract(Duration(days: today.weekday - 1))
-          : today.subtract(Duration(days: today.weekday % 7));
+      // DateTime firstDayOfWeek = (weekStartDay == CalendarView.monday)
+      //     ? today.subtract(Duration(days: today.weekday - 1))
+      //     : today.subtract(Duration(days: today.weekday % 7));
 
       // Add the dates of the current week to the list
       for (int i = 1; i <= lastDayOfTheMonth.day; i++) {

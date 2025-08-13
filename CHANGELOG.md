@@ -1,3 +1,16 @@
+## 0.0.5 13/08/2025
+### Updated
+
+- **Dart SDK** updated to `3.8.1` to support latest language improvements and toolchain stability.
+- **Flutter SDK** updated to `3.32.8`.
+- Updated package dependencies in `pubspec.yaml` to latest compatible versions
+
+### Added
+- Entry `category` property to assing a category to an entry.
+- `showTimeTooltipOnWeb` option to hide or show the time tooltip.
+- Solid lines for time slots.
+- `getEntriesByCategory` returns all entries in the given category.
+
 ## 0.0.4 11/02/2025
 * Support for 5-Minute Intervals: Added support for scheduling tasks in 5-minute increments.
 * **Dynamic Cell Widths:** Introduced MediaQuery to dynamically adjust cell widths based on screen size, ensuring the UI is responsive across different devices (mobile, tablet, desktop).

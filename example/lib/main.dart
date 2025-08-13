@@ -89,12 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Cedric',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -118,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cdn.pixabay.com/photo/2015/02/17/08/46/face-639139_640.jpg'),
               ),
@@ -127,12 +127,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Yung',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -165,12 +165,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Moss',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -232,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   width: 2,
                 ),
               ),
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 backgroundImage: NetworkImage(
                     'https://cdn.pixabay.com/photo/2020/04/23/19/15/face-5083690_1280.jpg'),
               ),
@@ -241,12 +241,12 @@ class _MyHomePageState extends State<MyHomePage> {
               bottom: 0,
               right: 0,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: const BoxDecoration(
                   color: Colors.blue,
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(12)),
                 ),
-                child: Text(
+                child: const Text(
                   'Minnieh',
                   style: TextStyle(color: Colors.white, fontSize: 12),
                 ),
@@ -341,6 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
           color: Colors.blue,
           id: generateId(5),
+          category: 'meeting',
           resource: ResourceScheduleEntry(
             index:
                 0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -358,10 +359,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating));
           },
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Team Meeting',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -376,6 +377,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
           color: Colors.green,
           id: generateId(5),
+          category: 'development',
           resource: ResourceScheduleEntry(
             index:
                 0, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -397,10 +399,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating));
           },
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Code Review',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -415,6 +417,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
           color: Colors.pink,
           id: generateId(5),
+          category: 'meeting',
           resource: ResourceScheduleEntry(
             index:
                 1, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -431,10 +434,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating));
           },
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 'Client Presentation',
                 style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -449,6 +452,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
         color: Colors.orange,
         id: generateId(5),
+        category: 'development',
         resource: ResourceScheduleEntry(
           index:
               3, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -465,10 +469,10 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Development Session',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -484,6 +488,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
         color: Colors.yellow,
         id: generateId(5),
+        category: 'development',
         resource: ResourceScheduleEntry(
           index:
               5, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -500,10 +505,10 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Task Scheduler',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -519,6 +524,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ScheduleEntry(
         color: Colors.yellow,
         id: generateId(5),
+        category: 'QA',
         resource: ResourceScheduleEntry(
           index:
               2, // uses this index to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
@@ -535,10 +541,10 @@ class _MyHomePageState extends State<MyHomePage> {
               backgroundColor: Colors.green,
               behavior: SnackBarBehavior.floating));
         },
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Testing and QA',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),

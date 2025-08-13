@@ -1,7 +1,7 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:task_scheduler/src/task_scheduler.dart';
+import 'package:task_scheduler/src/constants.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
 import 'package:task_scheduler/src/task_scheduler_settings.dart';
 import 'config.dart' as config;
@@ -44,6 +44,9 @@ class ScheduleEntry extends StatefulWidget {
   /// The entry type. This may be used to identify the type of entry, e.g. empty, blocked & booked
   final String? type;
 
+  /// the entry category
+  final String? category;
+
   /// Static fields representing default or reserved states of schedule entries
   static const String empty = 'empty';
   static const String blocked = 'blocked';
@@ -72,6 +75,7 @@ class ScheduleEntry extends StatefulWidget {
       this.onDragCallback,
       this.spanOverDays,
       this.type,
+      this.category,
       this.options})
       : super(key: key);
 
@@ -108,6 +112,9 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   // Entry color
   var blockOriginalColor;
 
+  // entry duration
+  var blockOriginalDuration;
+
   /// Indicates whether borders should be displayed around the schedule entry.
   ///
   /// When set to `true`, borders will be shown around the schedule entry.
@@ -126,11 +133,30 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   /// Defaults to `false`.
   bool _showBottomBorder = false;
 
+  /// text to display on the tooltip
+  String? _tooltipText;
+
+  /// The currently active tooltip overlay, if any.
+  OverlayEntry? _tooltipOverlay;
+
+  /// show/hide time tooltip for web
+  bool _showTimeTooltipOnWeb = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.data != null) {
+      _showTimeTooltipOnWeb = widget.data!['ts_showTimeTooltipOnWeb'] ?? false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Check if drag is enabled
     bool isDragAndDrop = widget.options?.isTaskDraggable ?? false;
     blockOriginalColor = widget.color;
+    blockOriginalDuration = widget.duration;
 
     // span over days if not null, else default to 1 (no span)
     widget.spanOverDays ??= entryDuration;
@@ -145,12 +171,21 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
     return (isDragAndDrop) ? _draggableSlot() : _nonDraggableSlot();
   }
 
-  // A draggable widget
+  /// Builds a draggable schedule slot widget.
+  ///
+  /// This widget is positioned based on [widget.resource] and uses
+  /// [widget.color] and [widget.child] for styling and content.
+  ///
+  /// The slot can be displayed in two styles:
+  /// - Filled background when [widget.color] is not transparent
+  /// - Transparent background with border when [widget.color] is transparent
+  ///
+  /// Returns a [Positioned] widget containing the slot's UI.
   Widget _draggableSlot() {
     bool isResizable = widget.options?.taskResizeMode?['allowResize'] ?? false;
-    bool _showTooltip = false;
+    //bool _showTooltip = false;
     bool _isDraggingTop = false;
-    Color entryBorderColor = widget.color.withOpacity(1.0);
+    Color entryBorderColor = widget.color.withValues(alpha: 1.0);
 
     return (widget.color != Colors.transparent)
         ? Positioned(
@@ -182,7 +217,8 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                             border: Border(
                               top: BorderSide.none,
                               bottom: _showBottomBorder && isResizable
-                                  ? BorderSide(color: Colors.black, width: 2.0)
+                                  ? const BorderSide(
+                                      color: Colors.black, width: 2.0)
                                   : BorderSide.none,
                             ),
                           ),
@@ -255,26 +291,21 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               //borderRadius: config.borderRadius,
                               child: Stack(
                                 children: [
-                                  LongPressDraggable<
-                                      List<Map<String, dynamic>>>(
-                                    // Data is the value this Draggable stores.
-                                    data: [
-                                      {
-                                        'resourceHour': widget.resource.hour,
-                                        'resourceMinute':
-                                            widget.resource.minutes,
-                                        'duration': widget.duration,
-                                        'spanOverDays': entryDuration,
-                                        'fromId': widget.id,
-                                        'resourceIndex': widget.resource.index,
-                                        'bgColor': widget.color,
-                                        'child': widget.child,
-                                        'onTap': widget.onTap,
-                                        'data': widget.data,
-                                        'taskResizeMode':
-                                            widget.options?.taskResizeMode
-                                      }
-                                    ],
+                                  LongPressDraggable<Map<String, dynamic>>(
+                                    data: {
+                                      'resourceHour': widget.resource.hour,
+                                      'resourceMinute': widget.resource.minutes,
+                                      'duration': widget.duration,
+                                      'spanOverDays': entryDuration,
+                                      'fromId': widget.id,
+                                      'resourceIndex': widget.resource.index,
+                                      'bgColor': widget.color,
+                                      'child': widget.child,
+                                      'onTap': widget.onTap,
+                                      'data': widget.data,
+                                      'taskResizeMode':
+                                          widget.options?.taskResizeMode
+                                    },
                                     onDragStarted: () {
                                       setState(() {
                                         _showTopBorder = false;
@@ -285,37 +316,39 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                       onTap: widget.onTap as void Function()? ??
                                           () {},
                                       onTapDown: (_) {
-                                        setState(() {
-                                          _showTooltip = true;
-                                        });
+                                        // setState(() {
+                                        //   _showTooltip = true;
+                                        // });
                                       },
                                       onTapUp: (_) {
-                                        setState(() {
-                                          _showTooltip = false;
-                                        });
+                                        // setState(() {
+                                        //   _showTooltip = false;
+                                        // });
                                       },
-                                      child: Container(
-                                        height: ((widget.duration.toDouble() *
-                                                config.cellHeight!) /
-                                            60), //60 minutes
-                                        width: (config.cellWidth!.toDouble() *
-                                            entryDuration),
-                                        decoration: BoxDecoration(
-                                            //borderRadius: config.borderRadius,
-                                            color: (widget.color ??
-                                                    Theme.of(context)
-                                                        .primaryColor)
-                                                .withOpacity(0.6)),
-                                        child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 5.0,
-                                              top: 5.0,
-                                              right: 5.0,
-                                              bottom: 5.0),
-                                          alignment: Alignment.topLeft,
-                                          child: widget.child,
-                                        ),
-                                      ),
+                                      child: Column(children: [
+                                        Container(
+                                          height: ((widget.duration.toDouble() *
+                                                  config.cellHeight!) /
+                                              60), //60 minutes
+                                          width: (config.cellWidth!.toDouble() *
+                                              entryDuration),
+                                          decoration: BoxDecoration(
+                                              //borderRadius: config.borderRadius,
+                                              color: (widget.color ??
+                                                      Theme.of(context)
+                                                          .primaryColor)
+                                                  .withValues(alpha: 0.6)),
+                                          child: Container(
+                                            margin: const EdgeInsets.only(
+                                                left: 5.0,
+                                                top: 5.0,
+                                                right: 5.0,
+                                                bottom: 5.0),
+                                            alignment: Alignment.topLeft,
+                                            child: widget.child,
+                                          ),
+                                        )
+                                      ]),
                                     ),
                                     childWhenDragging: Container(),
                                     onDraggableCanceled: (velocity, offset) {
@@ -340,7 +373,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                               ),
                                               //borderRadius: config.borderRadius,
                                               color: widget.color
-                                                      .withOpacity(0.4) ??
+                                                      .withValues(alpha: 0.4) ??
                                                   Theme.of(context)
                                                       .primaryColor),
                                           child: Container(
@@ -436,7 +469,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                 child: Material(
                   child: Stack(
                     children: [
-                      DragTarget<List<Map<String, dynamic>>>(
+                      DragTarget<Map<String, dynamic>>(
                         builder: (
                           BuildContext context,
                           List<dynamic> accepted,
@@ -476,46 +509,113 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                               : '$entryEndTime:${endTime.minute}';
 
                           return InkWell(
-                            onTap: widget.onTap as void Function()? ?? () {},
-                            child: Tooltip(
-                              message:
-                                  isDraggingOver ? '$time - $entryEndTime' : '',
-                              child: Material(
-                                  color: color,
-                                  child: Container(
-                                    height: ((widget.duration.toDouble() *
-                                            config.cellHeight!) /
-                                        60),
-                                    width: (config.cellWidth!.toDouble() *
-                                        entryDuration),
-                                    decoration: BoxDecoration(
-                                      border: const Border(
-                                        bottom: BorderSide(
-                                          color: Colors.grey,
-                                          width: 0.5,
+                              onTap: widget.onTap as void Function()? ?? () {},
+                              child: (isDraggingOver && _showTimeTooltipOnWeb)
+                                  ? MouseRegion(
+                                      onEnter: (event) {
+                                        _showTooltip(context, event.position,
+                                            "$time - $entryEndTime");
+                                      },
+                                      onExit: (_) {
+                                        _hideTooltip();
+                                      },
+                                      child: GestureDetector(
+                                        onTapDown: (details) {
+                                          _showTooltip(
+                                              context,
+                                              details.globalPosition,
+                                              "$time - $entryEndTime");
+                                        },
+                                        onTapUp: (_) {
+                                          _hideTooltip();
+                                        },
+                                        child: Material(
+                                          color: color,
+                                          child: Container(
+                                            height:
+                                                ((widget.duration.toDouble() *
+                                                        config.cellHeight!) /
+                                                    60),
+                                            width:
+                                                (config.cellWidth!.toDouble() *
+                                                    entryDuration),
+                                            decoration: BoxDecoration(
+                                              border: const Border(
+                                                bottom: BorderSide(
+                                                  color:
+                                                      Constants.borderLineColor,
+                                                  width: 1.0,
+                                                ),
+                                                right: BorderSide(
+                                                  color:
+                                                      Constants.borderLineColor,
+                                                  width: 1.0,
+                                                ),
+                                              ),
+                                              color: widget.color ??
+                                                  Theme.of(context)
+                                                      .primaryColor,
+                                            ),
+                                            child: Center(child: widget.child),
+                                          ),
                                         ),
-                                        right: BorderSide(
-                                          color: Colors.grey,
-                                          width: 0.5,
+                                      ))
+                                  : Material(
+                                      color: color,
+                                      child: Container(
+                                        height: ((widget.duration.toDouble() *
+                                                config.cellHeight!) /
+                                            60),
+                                        width: (config.cellWidth!.toDouble() *
+                                            entryDuration),
+                                        decoration: BoxDecoration(
+                                          border: const Border(
+                                            bottom: BorderSide(
+                                              color: Constants.borderLineColor,
+                                              width: 1.0,
+                                            ),
+                                            right: BorderSide(
+                                              color: Constants.borderLineColor,
+                                              width: 1.0,
+                                            ),
+                                          ),
+                                          color: widget.color ??
+                                              Theme.of(context).primaryColor,
                                         ),
-                                      ),
-                                      color: widget.color ??
-                                          Theme.of(context).primaryColor,
-                                    ),
-                                    child: Center(
-                                      child: widget.child,
-                                    ),
-                                  )),
-                            ),
-                          );
+                                        child: Center(
+                                          child: widget.child,
+                                        ),
+                                      )));
                         },
-                        onAccept: (List<Map<String, dynamic>> data) {
-                          final String id = data[0]['fromId'];
+                        onWillAcceptWithDetails: (details) {
+                          String time = '';
+                          time = (widget.resource.hour < 10)
+                              ? '0${widget.resource.hour}'
+                              : '${widget.resource.hour}';
+                          time = (widget.resource.minutes < 10)
+                              ? '$time:0${widget.resource.minutes}'
+                              : '$time:${widget.resource.minutes}';
+
+                          DateTime startTime = DateTime(1991, 01, 01,
+                              widget.resource.hour, widget.resource.minutes);
+                          DateTime endTime =
+                              startTime.add(Duration(minutes: widget.duration));
+
+                          String entryEndTime = (endTime.hour < 10)
+                              ? '0${endTime.hour}'
+                              : '${endTime.hour}';
+                          entryEndTime = (endTime.minute < 10)
+                              ? '$entryEndTime:0${endTime.minute}'
+                              : '$entryEndTime:${endTime.minute}';
+
+                          return true;
+                        },
+                        onAcceptWithDetails: (details) {
+                          final String id = details.data['fromId'];
                           final int resourceIndex = widget.resource.index;
                           final int startHour = widget.resource.hour;
                           final int minutes = widget.resource.minutes;
-                          final int duration = data[0]['duration'];
-                          final Widget? child = widget.child;
+                          final int duration = details.data['duration'];
 
                           setState(() {
                             if (widget.onDragCallback != null) {
@@ -525,20 +625,23 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                 'hour': startHour,
                                 'minutes': minutes,
                                 'duration': duration,
-                                'fromHour': data[0]['resourceHour'],
-                                'fromMinute': data[0]['resourceMinute'],
-                                'fromDuration': data[0]['duration'],
-                                'spanOverDays': data[0]['spanOverDays'],
-                                'fromResourceIndex': data[0]['resourceIndex'],
-                                'child': data[0]['child'],
-                                'bgColor': data[0]['bgColor'],
-                                'fromId': data[0]['fromId'],
-                                'onTap': data[0]['onTap'],
-                                'data': data[0]['data'],
-                                'taskResizeMode': data[0]['taskResizeMode']
+                                'fromHour': details.data['resourceHour'],
+                                'fromMinute': details.data['resourceMinute'],
+                                'fromDuration': details.data['duration'],
+                                'spanOverDays': details.data['spanOverDays'],
+                                'fromResourceIndex':
+                                    details.data['resourceIndex'],
+                                'child': details.data['child'],
+                                'bgColor': details.data['bgColor'],
+                                'fromId': details.data['fromId'],
+                                'onTap': details.data['onTap'],
+                                'data': details.data['data'],
+                                'taskResizeMode': details.data['taskResizeMode']
                               }); // Call the callback function
                             }
                           });
+
+                          _hideTooltip();
                         },
                         onLeave: (data) {
                           widget.color = blockOriginalColor;
@@ -552,7 +655,59 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
           );
   }
 
-  // Non-draggable widget
+  /// Displays a custom tooltip at the given screen [position] with the provided [message].
+  ///
+  /// This creates and inserts an [OverlayEntry] into the current [Overlay],
+  /// ensuring that any existing tooltip is removed first to prevent stacking.
+  ///
+  /// [context] - BuildContext to access the overlay.
+  /// [position] - Global screen coordinates where the tooltip should appear.
+  /// [message] - The text to be displayed in the tooltip.
+  void _showTooltip(BuildContext context, Offset position, String message) {
+    _hideTooltip();
+
+    _tooltipOverlay = OverlayEntry(
+      builder: (context) => Positioned(
+        left: position.dx + 10,
+        top: position.dy + 10,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.85),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              message,
+              style: const TextStyle(color: Colors.white, fontSize: 14),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(_tooltipOverlay!);
+  }
+
+  /// Hides the currently displayed tooltip by removing the [OverlayEntry].
+  ///
+  /// If no tooltip is currently displayed, this does nothing.
+  void _hideTooltip() {
+    _tooltipOverlay?.remove();
+    _tooltipOverlay = null;
+  }
+
+  /// Builds a non-draggable schedule slot widget.
+  ///
+  /// This widget is positioned based on [widget.resource] and uses
+  /// [widget.color] and [widget.child] for styling and content.
+  ///
+  /// The slot can be displayed in two styles:
+  /// - Filled background when [widget.color] is not transparent
+  /// - Transparent background with border when [widget.color] is transparent
+  ///
+  /// Returns a [Positioned] widget containing the slot's UI.
   Widget _nonDraggableSlot() {
     return (widget.color != Colors.transparent)
         ? Positioned(
@@ -622,12 +777,12 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                             decoration: BoxDecoration(
                               border: const Border(
                                 bottom: BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
+                                  color: Constants.borderLineColor,
+                                  width: 1.0,
                                 ),
                                 right: BorderSide(
-                                  color: Colors.grey,
-                                  width: 0.5,
+                                  color: Constants.borderLineColor,
+                                  width: 1.0,
                                 ),
                               ),
                               color: widget.color ??
@@ -680,12 +835,12 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                       decoration: BoxDecoration(
                           border: const Border(
                             bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 0.5,
+                              color: Constants.borderLineColor,
+                              width: 1.0,
                             ),
                             right: BorderSide(
-                              color: Colors.grey,
-                              width: 0.5,
+                              color: Constants.borderLineColor,
+                              width: 1.0,
                             ),
                           ),
                           color: widget.color ?? Theme.of(context).primaryColor,
@@ -696,8 +851,8 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                             colors: [
                               widget.color,
                               widget.color,
-                              widget.color.withOpacity(0.5),
-                              widget.color.withOpacity(0.5),
+                              widget.color.withValues(alpha: 0.5),
+                              widget.color.withValues(alpha: 0.5),
                             ],
                             tileMode: TileMode.repeated,
                           )),

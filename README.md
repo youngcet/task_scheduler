@@ -44,7 +44,7 @@ https://youngcet.github.io/taskscheduler.github.io/#/
 
 6. **Entry Management:**
    - Add, and edit entries within the schedule.
-   - Customize entry properties such as color, duration, draggable and resizable behavior.
+   - Customize entry properties such as color, category, duration, draggable and resizable behavior.
    - Block off specific periods on a schedule for a resource.
    
 7. **Entry Interaction:**
@@ -431,6 +431,33 @@ void _createNewEntry(BuildContext context, Map<String, dynamic> data) {
   }
 ```
 
+## Categorizing Entries
+Assign a category to an entry,
+```dart 
+ScheduleEntry(
+  category: 'meeting',
+  ...
+),
+```
+
+The `getEntriesByCategory` method returns all ScheduleEntry items from taskScheduler.entries whose category matches a given category. 
+
+```dart
+// define the schedule view
+TaskScheduleView taskScheduleView = TaskScheduleView(
+    taskScheduler: TaskScheduler(
+  scheduleStartTime: ScheduleTimeline(hour: 8),
+  scheduleEndTime: ScheduleTimeline(hour: 17),
+  ...
+));
+
+// load the view
+taskScheduler = taskScheduleView.loadScheduleView(entries: entries);
+
+// get the entries
+final entries = taskScheduleView.getEntriesByCategory('meeting'); 
+```
+
 ## Blocking Off Times
 Block off specific periods on a schedule for a resource.
 
@@ -441,7 +468,7 @@ You can specify entries to block with the `BlockedEntry` object.
 BlockedEntry(
     title: 'Lunch break', // entry title (optional)
     resource: ResourceScheduleEntry(
-      index: 2, // the resource to add entries against resources, i.e. 0 = 1st resource, 1 = 2nd etc
+      index: 2, // the resource to add entries against, i.e. 0 = 1st resource, 1 = 2nd etc
       hour: 8, // start hour to block
       minutes: 0, // start minutes to blobk
     ), 
