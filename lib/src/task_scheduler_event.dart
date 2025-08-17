@@ -110,16 +110,10 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   int entryDuration = 1;
 
   // Entry color
-  var blockOriginalColor;
+  dynamic blockOriginalColor;
 
   // entry duration
-  var blockOriginalDuration;
-
-  /// Indicates whether borders should be displayed around the schedule entry.
-  ///
-  /// When set to `true`, borders will be shown around the schedule entry.
-  /// Defaults to `false`.
-  bool _showBorders = false;
+  dynamic blockOriginalDuration;
 
   /// Indicates whether the top border should be displayed around the schedule entry.
   ///
@@ -132,9 +126,6 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
   /// When set to `true`, the bottom border will be shown around the schedule entry.
   /// Defaults to `false`.
   bool _showBottomBorder = false;
-
-  /// text to display on the tooltip
-  String? _tooltipText;
 
   /// The currently active tooltip overlay, if any.
   OverlayEntry? _tooltipOverlay;
@@ -483,10 +474,10 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                                       0xFF000000)) {
                             widget.color = Colors.transparent;
                           }
-
+                          
                           final color = isDraggingOver
                               ? Colors.blue[100]
-                              : Colors.transparent;
+                              : widget.data!['gridColor'];
 
                           String time = '';
                           time = (widget.resource.hour < 10)
@@ -859,7 +850,7 @@ class _ScheduleEntryState extends State<ScheduleEntry> {
                       child: Center(
                         child: Text(
                           widget.data!['title'],
-                          style: TextStyle(
+                          style: widget.data!['titleTextStyle'] ?? TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               color: Colors.grey[500]),

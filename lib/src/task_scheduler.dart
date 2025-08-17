@@ -7,6 +7,7 @@ import 'package:task_scheduler/src/blocked_entry.dart';
 import 'package:task_scheduler/src/calendar_view.dart';
 import 'package:task_scheduler/src/constants.dart';
 import 'package:task_scheduler/src/task_scheduler_datetime.dart';
+import 'package:task_scheduler/src/task_scheduler_header_vertical.dart';
 import 'config.dart' as config;
 import 'package:task_scheduler/src/task_scheduler_event.dart';
 import 'package:task_scheduler/src/task_scheduler_header.dart';
@@ -83,6 +84,11 @@ class TaskScheduler extends StatefulWidget {
   /// the exact time of the slot that is being dragged over.
   final bool? showTimeTooltipOnWeb;
 
+  /// Whether to display timeslots horizontally instead of vertically.
+  /// If `true`, timeslots will be arranged at the top.
+  /// If `false`, timeslot will be arranged on the left (default setting).
+  final bool? showTimeslotHorizontally;
+
   /// Constructor to initialize the TaskScheduler widget with necessary configurations.
   const TaskScheduler(
       {Key? key,
@@ -98,7 +104,8 @@ class TaskScheduler extends StatefulWidget {
       this.scrollToCurrentTime,
       this.showCurrentTimeLine,
       this.showTimeTooltipOnWeb,
-      this.onDragAccept})
+      this.onDragAccept,
+      this.showTimeslotHorizontally})
       : super(key: key);
 
   @override
@@ -215,6 +222,20 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   // display current time line
   bool currentTimeLine = true;
 
+  /// Whether to display timeslots horizontally instead of vertically.
+  /// If `true`, timeslots will be arranged at the top.
+  /// If `false`, timeslot will be arranged on the left.
+  bool _showTimeslotHorizontally = false;
+
+  /// A list of vertical schedule resource headers used in the schedule view.
+  ///
+  /// Each [VerticalScheduleResourceHeader] represents a resource (e.g.,
+  /// a person, room, or category) displayed vertically in the schedule.
+  ///
+  /// This list is initialized as empty and populated dynamically when
+  /// resources are added to the schedule.
+  List<VerticalScheduleResourceHeader> _verticalScheduleResourceHeader = [];
+
   // timer
   Timer? _timer;
 
@@ -228,6 +249,21 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
     if (widget.timeFormat?.minuteInterval != null) {
       defaultInterval = widget.timeFormat!.minuteInterval!;
+    }
+
+    if (widget.showTimeslotHorizontally != null){
+      _showTimeslotHorizontally = widget.showTimeslotHorizontally!;
+      if (_showTimeslotHorizontally){
+        for (var header in widget.headers){
+          _verticalScheduleResourceHeader.add(VerticalScheduleResourceHeader(
+            id: header.id,
+            title: header.title,
+            position: header.position,
+            height: 90,
+            child: header.child,
+          ));
+        }
+      }
     }
 
     _validateData();
@@ -341,6 +377,30 @@ class _TaskSchedulerState extends State<TaskScheduler> {
       timeVerticalController.jumpTo(config.verticalScrollController.offset);
     });
 
+    return _showTimeslotHorizontally ? _horizontalTimeslotLayout() : _verticalTimeslotLayout();
+  }
+
+  /// Builds the vertical timeslot layout for the schedule view.
+  ///
+  /// This widget displays a vertical list of time slots alongside a horizontal
+  /// header row. It supports a scrollable interface for both the time column
+  /// and the main schedule grid, while keeping headers fixed.
+  ///
+  /// The layout consists of:
+  /// - A horizontal header row representing schedule columns (e.g., resources or days),
+  ///   which is wrapped in a non-scrollable `SingleChildScrollView`.
+  /// - A divider line below the headers.
+  /// - An expanded area containing:
+  ///   - A vertical column of time slots on the left, scrollable vertically,
+  ///   - A vertical divider line separating the time column from the main schedule grid,
+  ///   - A stack containing the main timeslot grid, which aligns with the vertical
+  ///     time slots.
+  ///
+  /// The `GestureDetector` wrapping the layout allows for potential interaction
+  /// handling, such as tapping or dragging events.
+  ///
+  /// Returns a [Widget] representing the fully composed vertical timeslot layout.
+  Widget _verticalTimeslotLayout(){
     return GestureDetector(
       child: Container(
         color: settings.backgroundColor,
@@ -389,7 +449,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               for (int i = 0; i < _timeslots.length; i++)
-                                addTimeSlot(_timeslots[i]),
+                                addTimeSlot(time: _timeslots[i]),
                             ],
                           ),
                           Container(
@@ -407,7 +467,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
                   Expanded(
                       child: Stack(
                     children: [
-                      buildScheduleGrid(context),
+                      _buildVerticalTimeslotGrid(context),
                     ],
                   )),
                 ],
@@ -427,7 +487,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   /// - [context]: Build context for layout calculations and theming.
   ///
   /// Returns a widget containing scrollable grid with schedule tasks and time indicators.
-  Widget buildScheduleGrid(BuildContext context) {
+  Widget _buildVerticalTimeslotGrid(BuildContext context) {
     config.cellWidth = _getCellWidth(context, config.totalHeaders);
 
     // Widget to build the schedule grid with scrollbars
@@ -510,6 +570,197 @@ class _TaskSchedulerState extends State<TaskScheduler> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the schedule grid widget with vertical and horizontal scrolling.
+  ///
+  /// The grid shows time intervals as rows and resources or headers as columns,
+  /// with dividers forming the grid lines and overlays for tasks and the current time line.
+  ///
+  /// - [context]: Build context for layout calculations and theming.
+  ///
+  /// Returns a widget containing scrollable grid with schedule tasks and time indicators.
+  Widget _buildHorizontalTimeslotGrid(BuildContext context) {
+    config.cellWidth = _getCellWidth(context, _timeslots.length) * 2;
+    config.cellHeight = 90;
+
+    // Widget to build the schedule grid with scrollbars
+    return Scrollbar(
+      controller: config.verticalScrollController,
+      thumbVisibility: true,
+      child: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(), // prevent bounce mode on ios
+        controller: config.verticalScrollController,
+        child: Scrollbar(
+          controller: config.horizontalScrollController,
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            controller: config.horizontalScrollController,
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: (config.totalHeaders.toDouble() * config.cellHeight!),
+                      width:
+                          (_timeslots.length * config.cellWidth!).toDouble(),
+                      child: Stack(
+                        children: <Widget>[
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              for (var i = 0; i < config.totalHeaders; i++)
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height:
+                                          (config.cellHeight! - 1).toDouble(),
+                                    ),
+                                    const Divider(
+                                      height: 1,
+                                    ),
+                                  ],
+                                ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              for (var i = 0; i < _timeslots.length; i++)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      width: (config.cellWidth! - 1).toDouble(),
+                                    ),
+                                    Container(
+                                      width: 1,
+                                      height: (_timeslots.length *
+                                              config.cellHeight!).toDouble(),
+                                      color: Colors.black12,
+                                    )
+                                  ],
+                                )
+                            ],
+                          ),
+                          // for (int i = 0; i < tasks.length; i++) tasks[i],
+                          // if (currentTimeLine)
+                          //   _calculateHorizontalLinePosition()
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Builds the **horizontal timeslot layout** for the schedule view.
+  ///
+  /// This layout arranges time slots horizontally across the top,
+  /// followed by a horizontal divider, and then the main scrollable
+  /// body containing resource headers on the left and the timeslot
+  /// grid on the right.
+  ///
+  /// Structure:
+  /// - A [GestureDetector] wraps the entire layout to allow for future
+  ///   gesture handling (e.g., taps, drags).
+  /// - The top section is a horizontally scrollable row of timeslots.
+  /// - A horizontal divider separates the timeslot row from the grid.
+  /// - The expanded body consists of:
+  ///   - A scrollable column of vertical resource headers on the left.
+  ///   - A vertical divider between headers and the grid.
+  ///   - The main timeslot grid on the right.
+  ///
+  /// Returns:
+  ///   A [Widget] that renders the schedule in a horizontal layout mode.
+  Widget _horizontalTimeslotLayout(){
+    return GestureDetector(
+      child: Container(
+        color: settings.backgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SingleChildScrollView(
+              controller: dayHorizontalController,
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(
+                    width: 100,
+                  ),
+                  for (int i = 0; i < _timeslots.length; i++)
+                    addTimeSlot(time: _timeslots[i], showHorizontally: true),
+                ],
+              ),
+            ),
+            Container(
+              height: 1,
+              color: settings.dividerColor ?? Theme.of(context).primaryColor,
+            ),
+            Expanded(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: SingleChildScrollView(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: timeVerticalController,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              for (int i = 0; i < config.totalHeaders; i++)
+                                _verticalScheduleResourceHeader[i],
+                            ],
+                          ),
+                          Container(
+                            height: (config.totalHeaders.toDouble() * config.cellHeight!),
+                            width: 1,
+                            color: settings.dividerColor ??
+                                Constants.borderLineColor,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                      child: Stack(
+                    children: [
+                      _buildHorizontalTimeslotGrid(context),
+                    ],
+                  )),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -893,7 +1144,21 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     }).toList();
   }
 
-  // Function to add minutes to time if necessary
+  /// Formats a given [time] string by optionally removing the minutes.
+  ///
+  /// If [widget.timeFormat?.includeMinutes] is `false`, the method
+  /// strips the `:00` part from the [time] string (e.g., "08:00" → "08").
+  /// 
+  /// If `includeMinutes` is `true` or `null`, the original [time]
+  /// string is returned unchanged.
+  ///
+  /// Example:
+  /// ```dart
+  /// _addMinutes("09:00"); // returns "09" if includeMinutes == false
+  /// _addMinutes("09:30"); // remains "09:30" if includeMinutes == true
+  /// ```
+  ///
+  /// Returns the formatted [time] string.
   String _addMinutes(String time) {
     if (widget.timeFormat?.includeMinutes != null) {
       if (!widget.timeFormat!.includeMinutes!) {
@@ -919,7 +1184,19 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return DateTime(dateTime.year, dateTime.month, dateTime.day, hour, minute);
   }
 
-  // Function to calculate cell height based on interval
+  /// Returns the height of a cell based on the given [interval] in minutes.
+  ///
+  /// Different intervals map to predefined pixel heights to control
+  /// the vertical size of time slots in the schedule view.
+  ///
+  /// Example:
+  /// ```dart
+  /// _getCellHeight(30); // returns 130
+  /// _getCellHeight(5);  // returns 500
+  /// ```
+  ///
+  /// If the [interval] does not match a predefined case, a default
+  /// height of `200` is returned.
   int _getCellHeight(int interval) {
     int height = 0;
 
@@ -947,7 +1224,24 @@ class _TaskSchedulerState extends State<TaskScheduler> {
     return height;
   }
 
-  // Function to calculate cell width based on size
+  /// Calculates the width of a cell based on the [size] and screen width.
+  ///
+  /// - If [size] is `1`, the width spans the full screen.
+  /// - If [size] is `2`, the width is half the screen.
+  /// - For larger [size] values, the screen is divided by [size] (or by 3 on mobile).
+  ///
+  /// If the current view is detected as a **month view** with more
+  /// than 7 headers, a fixed width of `160` is applied regardless of
+  /// screen size.
+  ///
+  /// Example:
+  /// ```dart
+  /// _getCellWidth(context, 1); // full screen width
+  /// _getCellWidth(context, 2); // half screen width
+  /// _getCellWidth(context, 3); // one-third or adaptive on web
+  /// ```
+  ///
+  /// Returns the calculated width as an integer.
   int _getCellWidth(BuildContext context, int size) {
     double screenWidth = MediaQuery.of(context).size.width;
     int width = 0;
@@ -1089,7 +1383,7 @@ class _TaskSchedulerState extends State<TaskScheduler> {
   /// This function takes a time string, formats it based on the user's time
   /// settings (12-hour or 24-hour format), and returns a widget displaying
   /// the formatted time in a specific layout.
-  Widget addTimeSlot(String time) {
+  Widget addTimeSlot({required String time, bool? showHorizontally}) {
     double remainder = 60 / defaultInterval;
     bool showHoursOnly = widget.timeFormat?.showHoursOnly ?? false;
 
@@ -1142,13 +1436,13 @@ class _TaskSchedulerState extends State<TaskScheduler> {
 
     return SizedBox(
       height: ((config.cellHeight!.toDouble() / remainder)),
-      width: 60,
+      width: (showHorizontally != null && showHorizontally) ? config.cellWidth?.toDouble() : 60,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
         child: Center(
             child: Text(
           time,
-          style: const TextStyle(fontSize: 14.0),
+          style: widget.timeFormat!.timeTextStyle,
         )),
       ),
     );

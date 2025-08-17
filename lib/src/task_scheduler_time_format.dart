@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// A class for configuring time settings in the scheduler.
 class SchedulerTimeSettings {
   /// Indicates whether to use a 24-hour time format (e.g., 14:00).
@@ -17,6 +19,9 @@ class SchedulerTimeSettings {
   /// If true, only hours will be shown on the clock, excluding minutes.
   bool? showHoursOnly;
 
+  /// Defines the text style for displaying time elements in the UI.
+  TextStyle? timeTextStyle;
+
   /// Constructor for creating an instance of [SchedulerTimeSettings].
   ///
   /// Allows customization of various time settings such as hour format,
@@ -26,6 +31,7 @@ class SchedulerTimeSettings {
       this.use24HourFormat,
       this.includePeriod,
       this.includeMinutes,
+      this.timeTextStyle,
       this.showHoursOnly});
 
   /// Factory constructor for creating a [SchedulerTimeSettings] instance
@@ -36,18 +42,21 @@ class SchedulerTimeSettings {
   /// - [interval]: Minute interval for the time picker. Default is `0`.
   /// - [includeMinutes]: Whether to include minutes in the display. Default is `true`.
   /// - [showHoursOnly]: Whether to show only hours on the clock. Default is `false`.
+  /// - [timeTextStyle]: Defines the text style for displaying time elements in the UI.
   factory SchedulerTimeSettings.hourFormat({
     bool format = false,
     bool period = false,
     int interval = 0,
     bool includeMinutes = true,
     bool showHoursOnly = false,
+    TextStyle timeTextStyle = const TextStyle(fontSize: 14.0),
   }) {
     return SchedulerTimeSettings(
         minuteInterval: interval,
         use24HourFormat: format,
         includePeriod: period,
         includeMinutes: includeMinutes,
+        timeTextStyle: timeTextStyle,
         showHoursOnly: showHoursOnly);
   }
 }

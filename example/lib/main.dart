@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Container(
               width: 64,
-              height: 64,
+              height: 74,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -567,7 +567,7 @@ class _MyHomePageState extends State<MyHomePage> {
             hour: 8,
             minutes: 0,
           ),
-          duration: 60),
+          duration: 60,),
       BlockedEntry(
           resource: ResourceScheduleEntry(
             index:
@@ -608,7 +608,8 @@ class _MyHomePageState extends State<MyHomePage> {
             hour: 13,
             minutes: 0,
           ),
-          duration: 30),
+          duration: 30,
+          ),
       BlockedEntry(
           title: 'Lunch break',
           resource: ResourceScheduleEntry(
@@ -675,6 +676,8 @@ class _MyHomePageState extends State<MyHomePage> {
       entries: [],
       blockedEntries: blockedEntries,
       headers: headers,
+      showTimeslotHorizontally: true,
+      //options: TaskSchedulerSettings(backgroundColor: Colors.yellow, gridColor: Colors.amber),
       timeFormat: SchedulerTimeSettings(
         minuteInterval: timeInterval,
         use24HourFormat: true,

@@ -33,6 +33,9 @@ class TaskSchedulerSettings {
   /// If `true`, users can reposition entries via drag-and-drop.
   bool? isTaskDraggable;
 
+  /// set the color of the grid
+  Color? gridColor;
+
   /// Allowed task schedule intervals and their corresponding pixel heights.
   /// Keys represent time intervals in minutes (e.g., '5', '10', '15').
   /// Values define the calculated pixel height for each interval.
@@ -61,5 +64,6 @@ class TaskSchedulerSettings {
       {this.dividerColor,
       this.backgroundColor,
       this.isTaskDraggable,
+      this.gridColor,
       this.taskResizeMode});
 }

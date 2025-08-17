@@ -377,13 +377,21 @@ class TaskScheduleView {
 
         if (timelineDateTime.isBefore(timePlannerDateTime) ||
             !timelineDateTime.isAfter(timePlannerDateTime)) {
+          Color? gridColor;
+
+          if (taskScheduler.options != null){
+            if (taskScheduler.options!.gridColor != null){
+              gridColor = taskScheduler.options!.gridColor;
+            } 
+          }
+          
           _addNewEntry(ScheduleEntry(
             color: Colors.transparent,
             id: res.id,
             type: ScheduleEntry.empty,
             resource: ResourceScheduleEntry(
                 index: res
-                    .position, // uses resource index to assign an entry, i.e. 0 = 1st resource, 1 = 2nd etc
+                    .position, 
                 hour: int.parse(timeparts[0]),
                 minutes: int.parse(timeparts[1])),
             duration: taskScheduler.timeFormat?.minuteInterval ?? 60,
@@ -396,7 +404,8 @@ class TaskScheduleView {
             data: {
               'type': ScheduleEntry.empty,
               'ts_showTimeTooltipOnWeb':
-                  taskScheduler.showTimeTooltipOnWeb ?? false
+                  taskScheduler.showTimeTooltipOnWeb ?? false,
+              'gridColor': gridColor ?? Colors.transparent
             },
             onTap: () {
               taskScheduler.onEmptySlotPressed({
@@ -436,7 +445,7 @@ class TaskScheduleView {
 
         for (int i = 0; i < numberOfSlots; i++) {
           _addNewEntry(ScheduleEntry(
-            color: Colors.grey.shade300,
+            color: taskScheduler.options?.gridColor ?? Colors.grey.shade300,
             id: generateId(5),
             type: ScheduleEntry.blocked,
             resource: ResourceScheduleEntry(
@@ -445,7 +454,7 @@ class TaskScheduleView {
                 minutes: endTime.minute),
             duration: interval,
             options: TaskSchedulerSettings(isTaskDraggable: false),
-            data: {'type': ScheduleEntry.blocked, 'title': entry.title ?? ''},
+            data: {'type': ScheduleEntry.blocked, 'title': entry.title ?? '', 'titleTextStyle': entry.titleTextStyle},
           ));
 
           endTime = endTime.add(Duration(minutes: interval));

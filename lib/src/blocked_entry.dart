@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../task_scheduler.dart';
 
 /// The `BlockedEntry` class represents an entry in the schedule where a resource
@@ -14,7 +16,10 @@ class BlockedEntry {
   /// The duration for which the resource is blocked.
   int duration;
 
+  /// the text style for the title
+  TextStyle? titleTextStyle;
+
   /// The constructor for creating a `BlockedEntry` object.
   /// It requires the `resource` and `duration` to be provided, while the `title` is optional.
-  BlockedEntry({required this.resource, required this.duration, this.title});
+  BlockedEntry({required this.resource, required this.duration, this.title, this.titleTextStyle});
 }
